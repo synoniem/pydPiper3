@@ -11,7 +11,8 @@ RUN apk update && apk add \
   ttf-dejavu \
   build-base \
   gcc \
-  linux-headers \ 
+  linux-headers \
+  bash \
   py-pillow && rm -rf /var/cache/apk/*
 RUN pip install -r requirements.txt
 CMD /bin/bash

@@ -26,8 +26,8 @@ WIDGETS = {
 	'title': { 'type':'text', 'format':'{0}', 'variables':['title'], 'font':'small','varwidth':True,'effect':('scroll','left',5,1,20,'onloop',3,65) },
 	'artist': { 'type':'text', 'format':'{0}', 'variables':['artist'], 'font':'small','varwidth':True,'effect':('scroll','left',5,1,20,'onloop',3,65)},
 	'album': { 'type':'text', 'format':'{0}', 'variables':['album'], 'font':'small','varwidth':True,'effect':('scroll','left',5,1,20,'onloop',3,65)},
-	'time': { 'type':'text', 'format':'{0}', 'variables':['localtime|strftime+%-I:%M'], 'font':'large', 'just':'right', 'varwidth':True, 'size':(70,16) },
-	'ampm': { 'type':'text', 'format':'{0}', 'variables':['localtime|strftime+%p'], 'font':'small', 'varwidth':True },
+	'time': { 'type':'text', 'format':'{0}', 'variables':['current_time'], 'font':'large', 'just':'right', 'varwidth':True, 'size':(70,16) },
+#	'ampm': { 'type':'text', 'format':'{0}', 'variables':['current_time_ampm'], 'font':'small', 'varwidth':True },
 	'temp': { 'type':'text', 'format':'Outside {0}', 'variables':['outside_temp_formatted'], 'font':'small', 'just':'left', 'size':(55,8) },
 	'temphilow': { 'type':'text', 'format':'H {0}\nL {1}', 'variables':['outside_temp_max|int', 'outside_temp_min|int'], 'font':'small', 'just':'right', 'size':(25,16) },
 	'conditions': { 'type':'text', 'format':'{0}', 'variables':['outside_conditions|capitalize'], 'font':'small','varwidth':True, 'size':(55,16), 'effect':('scroll','left',5,1,20,'onloop',3,55)},
@@ -58,7 +58,9 @@ CANVASES = {
 	'showrepeatonce': { 'widgets': [ ('repeatoncesymbol',0,0), ('repeatonce', 15,0) ], 'size':(80,16) },
 	'showrepeatall': { 'widgets': [ ('repeatallsymbol',0,0), ('repeatall', 15,0) ], 'size':(80,16) },
 	'blank': { 'widgets': [], 'size':(80,16) },
-	'stoptime': { 'widgets': [ ('time',0,0), ('ampm',70,0) ], 'size':(80,16) },
+#	'stoptime': { 'widgets': [ ('time',0,0), ('ampm',70,0) ], 'size':(80,16) },
+# No need for ampm by using currentime with TIMEZONE and TIME24HOUR applied 2020-04-19 synoniem
+	'stoptime': { 'widgets': [ ('time',0,0)], 'size':(80,16) }, 
 	'weather': { 'widgets': [ ('temp',0,0), ('conditions',0,8), ('temphilow', 55,0) ], 'size':(80,16) },
 	'volume_changed': { 'widgets': [ ('volume',5,0), ('volumebar',0,8) ], 'size':(80,16) },
 }

@@ -186,6 +186,7 @@ class music_controller(threading.Thread):
                 if pydPiper_config.TIME24HOUR == True:
                     current_time = moment.utcnow().timezone(pydPiper_config.TIMEZONE).strftime(u"%H:%M").strip().decode()
                     current_time_sec = moment.utcnow().timezone(pydPiper_config.TIMEZONE).strftime(u"%H:%M:%S").strip().decode()
+                    current_time_ampm = u''
                 else:
                     current_time = moment.utcnow().timezone(pydPiper_config.TIMEZONE).strftime(u"%-I:%M %p").strip().decode()
                     current_time_sec = moment.utcnow().timezone(pydPiper_config.TIMEZONE).strftime(u"%-I:%M:%S %p").strip().decode()
@@ -278,18 +279,18 @@ class music_controller(threading.Thread):
 
                     if shouldshowupdate:
                         ctime = localtime.strftime("%-I:%M:%S %p").strip()
-                        print u"Status at time {0}".format(ctime)
+                        print (u"Status at time {0}".format(ctime))
 
                         with self.musicdata_lock:
                             for item,value in self.musicdata.iteritems():
                                 try:
-                                    print u"    [{0}]={1} {2}".format(item,repr(value), type(value))
+                                    print (u"    [{0}]={1} {2}".format(item,repr(value), type(value)))
                                 except:
-                                    print u"err"
-                                    print u"[{0}] =".format(item)
-                                    print type(value)
-                                    print repr(value)
-                            print u"\n"
+                                    print (u"err")
+                                    print (u"[{0}] =".format(item))
+                                    print (type(value))
+                                    print (repr(value))
+                            print (u"\n")
 
                 # Update musicdata_prev
                 with self.musicdata_lock:
@@ -613,7 +614,7 @@ if __name__ == u'__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:],u"d:",[u"driver=",u"devicetype=",u"width=",u"height=","rs=","e=","d4=","d5=","d6=","d7=","i2caddress=","i2cport=" ,u"wapi=", u"wlocale=", u"timezone=", u"temperature=", u"lms",u"mpd",u"spop",u"rune",u"volumio",u"pages=", u"lmsplayer=", u"showupdates"])
     except getopt.GetoptError:
-        print u'pydPiper.py -d <driver> --devicetype <devicetype (for LUMA devices)> --width <width in pixels> --height <height in pixels> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --i2caddress <i2c address> --i2cport <i2c port> --wapi <weather underground api key> --wlocale <weather location> --timezone <timezone> --temperature <fahrenheit or celsius> --mpd --spop --lms --rune --volumio --pages <pagefile> --lmsplayer <mac address of lms player> --showupdates'
+        print (u'pydPiper.py -d <driver> --devicetype <devicetype (for LUMA devices)> --width <width in pixels> --height <height in pixels> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --i2caddress <i2c address> --i2cport <i2c port> --wapi <weather underground api key> --wlocale <weather location> --timezone <timezone> --temperature <fahrenheit or celsius> --mpd --spop --lms --rune --volumio --pages <pagefile> --lmsplayer <mac address of lms player> --showupdates')
         sys.exit(2)
 
     services_list = [ ]
@@ -637,7 +638,7 @@ if __name__ == u'__main__':
 
     for opt, arg in opts:
         if opt == u'-h':
-            print u'pydPiper.py -d <driver> --devicetype <devicetype e.g. ssd1306, sh1106> --width <width in pixels> --height <height in pixels> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --i2caddress <i2c address> --i2cport <i2c port> --enable <enable duration> --wapi <weather underground api key> --wlocale <weather location> --timezone <timezone> --temperature <fahrenheit or celsius> --mpd --spop --lms --rune --volumio --pages <pagefile> --lmsplayer <mac address of lms player> --showupdates'
+            print (u'pydPiper.py -d <driver> --devicetype <devicetype e.g. ssd1306, sh1106> --width <width in pixels> --height <height in pixels> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --i2caddress <i2c address> --i2cport <i2c port> --enable <enable duration> --wapi <weather underground api key> --wlocale <weather location> --timezone <timezone> --temperature <fahrenheit or celsius> --mpd --spop --lms --rune --volumio --pages <pagefile> --lmsplayer <mac address of lms player> --showupdates')
             sys.exit()
         elif opt in (u"-d", u"--driver"):
             driver = arg
@@ -775,7 +776,7 @@ if __name__ == u'__main__':
         pass
 
     finally:
-        print u"Shutting down threads"
+        print (u"Shutting down threads")
         exitapp[0] = True
         try:
             lcd.clear()

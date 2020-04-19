@@ -47,7 +47,7 @@ LOGLEVEL={'debug': logging.DEBUG, 'info': logging.INFO, 'warning': logging.WARNI
 # Localization Parameters
 # Adjust this setting to localize the time display to your region
 TIMEZONE=safeget(config,'SYSTEM', 'timezone')
-TIME24HOUR=bool(safeget(config, 'SYSTEM', 'time24hour',False))
+TIME24HOUR=bool(safeget(config, 'SYSTEM', 'time24hour',True))
 
 # Adjust this setting to localize temperature displays
 TEMPERATURE=safeget(config,'SYSTEM', 'temperature')
