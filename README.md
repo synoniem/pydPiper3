@@ -8,8 +8,9 @@ Deze versie maakt gebruik van de docker container dhrone/pydPiper:latest die dhr
 
 Voor nu kun je volstaan met het clonen van deze repo in de map /home/volumio, aanpassen van pydPiper.cfg en het kopieeren van het pydpiper.service bestand: 
 
+<pre> 
 sudo cp pydpiper.service /etc/systemd/system/pydpiper.service
 sudo systemctl daemon-reload
 sudo service pydpiper start
-
+</pre>
 Het opstarten op een Pi Zero duurt ongeveer een minuut.
