@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # pydPiper ![splash](displays/images/pydPiper_splash.png)
 A python program written for the Raspberry Pi that controls small LCD and OLED screens for music distributions like Volumio, MoodeAudio, and Max2Play.
 
@@ -175,3 +176,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+=======
+# pydPiper
+Improving the version of dhrone/pydPiper for Raspberry Zero webradioproject with DAC, Volumio and 16x2LCD
+
+# NL
+Een versie van dhrone/pydPiper met wat kleine verbeteringen zoals ik die gebruik bij mijn webradioproject (https://synoniem.tweakblogs.net/blog/18684/pi-zero-radio). Zoals een nieuwe pydpiper.service bestand en een nieuwe pydPiper.cfg bestand. Ondersteuning voor 24 uurs versie klok op het 16x2LCD display (pages_lcd_16x2.py). Nog in de pijplijn zit ondersteuning van de weersverwachting van het KNMI in plaats van de Wunderground of Accuweather.
+
+Deze versie maakt gebruik van de docker container dhrone/pydPiper:latest die dhrone op hub.docker.com heeft staan. In de nabije toekomst hoop ik een eigen container gebaseerd op python3 op de dockerhub te plaatsen. 
+
+Voor nu kun je volstaan met het clonen van deze repo in de map /home/volumio, aanpassen van pydPiper.cfg en het kopieeren van het pydpiper.service bestand: 
+
+<pre> 
+sudo cp pydpiper.service /etc/systemd/system/pydpiper.service
+sudo systemctl daemon-reload
+sudo service pydpiper start
+</pre>
+Het opstarten op een Pi Zero duurt ongeveer een minuut.
+>>>>>>> 6cfdb88838b38d80ca80ed7c1e1d793c5a8d1ac1
