@@ -144,14 +144,14 @@ if __name__ == u'__main__':
                                     'prompt': 'Weather service?',
                                     'variable': 'WEATHER_SERVICE',
                                     'default': 'accuweather',
-                                    'allowed': ['accuweather', 'wunderground'],
+                                    'allowed': ['accuweather', 'wunderground', 'weerlive'],
                                     'casesensitive': False,
                                     'followup_questions': {
-                                        '^accuweather$|^wunderground$':[
+                                        '^accuweather$|^wunderground$|^weerlive$':[
                                             {
                                                 'prompt': 'API key?',
                                                 'variable': 'WEATHER_API',
-                                                'help': 'If using accuweather, an API can be requested from http://developer.accuweather.com.  Note: Weather Underground no longer supports free API keys.'
+                                                'help': 'If using accuweather, an API can be requested from http://developer.accuweather.com.  Note: Weather Underground no longer supports free API keys. weerlive.nl API key can be requested from http://weerlive.nl/delen.php'
                                             },
                                             {
                                                 'prompt': 'Location?',

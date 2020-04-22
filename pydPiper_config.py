@@ -56,7 +56,7 @@ TEMPERATURE=safeget(config,'SYSTEM', 'temperature')
 WEATHER_SERVICE = safeget(config,'SYSTEM', 'weather_service')
 WEATHER_API = safeget(config,'SYSTEM', 'weather_api')
 WEATHER_LOCATION = safeget(config,'SYSTEM', 'weather_location')
-
+WEATHER_OUTSIDE =  safeget(config,'SYSTEM', 'weather_outside')
 
 # Music Source Parameters
 MUSIC_SERVICE = safeget(config, 'SOURCE', 'source_type')

@@ -2,8 +2,8 @@
 # coding: UTF-8
 
 from __future__ import unicode_literals
-
-
+import pydPiper_config
+outside = pydPiper_config.WEATHER_OUTSIDE
 # Page Definitions
 # See Page Format.txt for instructions and examples on how to modify your display settings
 
@@ -27,9 +27,10 @@ WIDGETS = {
 	'artist': { 'type':'text', 'format':'{0}', 'variables':['artist'], 'font':'small','varwidth':True,'effect':('scroll','left',5,1,20,'onloop',3,65)},
 	'album': { 'type':'text', 'format':'{0}', 'variables':['album'], 'font':'small','varwidth':True,'effect':('scroll','left',5,1,20,'onloop',3,65)},
 	'time': { 'type':'text', 'format':'{0}', 'variables':['current_time'], 'font':'large', 'just':'right', 'varwidth':True, 'size':(70,16) },
+# No need for ampm by using currentime with TIMEZONE and TIME24HOUR applied - 2020-04-19 synoniem
 #	'ampm': { 'type':'text', 'format':'{0}', 'variables':['current_time_ampm'], 'font':'small', 'varwidth':True },
-	'temp': { 'type':'text', 'format':'Outside {0}', 'variables':['outside_temp_formatted'], 'font':'small', 'just':'left', 'size':(55,8) },
-	'temphilow': { 'type':'text', 'format':'H {0}\nL {1}', 'variables':['outside_temp_max|int', 'outside_temp_min|int'], 'font':'small', 'just':'right', 'size':(25,16) },
+	'temp': { 'type':'text', 'format':outside + ' {0}', 'variables':['outside_temp_formatted'], 'font':'small', 'just':'left', 'size':(55,8) },
+	'temphilow': { 'type':'text', 'format':'H {0: >2}\nL {1: >2}', 'variables':['outside_temp_max|int', 'outside_temp_min|int'], 'font':'small', 'just':'right', 'size':(25,16) },
 	'conditions': { 'type':'text', 'format':'{0}', 'variables':['outside_conditions|capitalize'], 'font':'small','varwidth':True, 'size':(55,16), 'effect':('scroll','left',5,1,20,'onloop',3,55)},
 	'radio': { 'type':'text', 'format':"RADIO", 'font':'small', 'varwidth':True, 'size':(40,8), 'just':'right' },
 	'volume': { 'type':'text', 'format':'VOLUME ({0})', 'variables':['volume'], 'font':'small', 'varwidth':True, 'just':'left', 'size':(60,8)},
@@ -51,15 +52,15 @@ CANVASES = {
 	'playartist': { 'widgets': [ ('artist',0,8), ('nowplaying',0,0), ('nowplayingdata',40,0), ('songprogress',65,8) ], 'size':(80,16) },
 	'playalbum': { 'widgets': [ ('album',0,8), ('nowplaying',0,0), ('nowplayingdata',40,0), ('songprogress',65,8) ], 'size':(80,16) },
 	'playtitle': { 'widgets':  [ ('title',0,8), ('nowplaying',0,0), ('nowplayingdata',40,0), ('songprogress',65,8) ], 'size':(80,16) },
-	'playartist_radio': { 'widgets': [ ('artist',0,8), ('nowplaying',0,0), ('radio',40,0), ('songprogress',65,8) ], 'size':(80,16) },
-	'playalbum_radio': { 'widgets':  [ ('album',0,8), ('nowplaying',0,0), ('radio',40,0), ('songprogress',65,8) ], 'size':(80,16) },
-	'playtitle_radio': { 'widgets':  [ ('title',0,8), ('nowplaying',0,0), ('radio',40,0), ('songprogress',65,8) ], 'size':(80,16) },
+	'playartist_radio': { 'widgets': [ ('artist',0,8), ('nowplaying',0,0), ('radio',40,0) ], 'size':(80,16) },
+	'playalbum_radio': { 'widgets':  [ ('album',0,8), ('nowplaying',0,0), ('radio',40,0) ], 'size':(80,16) },
+	'playtitle_radio': { 'widgets':  [ ('title',0,8), ('nowplaying',0,0), ('radio',40,0),], 'size':(80,16) },
 	'showrandom': { 'widgets': [ ('randomsymbol',0,0), ('random', 15,0) ], 'size':(80,16) },
 	'showrepeatonce': { 'widgets': [ ('repeatoncesymbol',0,0), ('repeatonce', 15,0) ], 'size':(80,16) },
 	'showrepeatall': { 'widgets': [ ('repeatallsymbol',0,0), ('repeatall', 15,0) ], 'size':(80,16) },
 	'blank': { 'widgets': [], 'size':(80,16) },
 #	'stoptime': { 'widgets': [ ('time',0,0), ('ampm',70,0) ], 'size':(80,16) },
-# No need for ampm by using currentime with TIMEZONE and TIME24HOUR applied 2020-04-19 synoniem
+# No need for ampm by using currentime with TIMEZONE and TIME24HOUR applied - 2020-04-19 synoniem
 	'stoptime': { 'widgets': [ ('time',0,0)], 'size':(80,16) }, 
 	'weather': { 'widgets': [ ('temp',0,0), ('conditions',0,8), ('temphilow', 55,0) ], 'size':(80,16) },
 	'volume_changed': { 'widgets': [ ('volume',5,0), ('volumebar',0,8) ], 'size':(80,16) },

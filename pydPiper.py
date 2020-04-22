@@ -278,8 +278,8 @@ class music_controller(threading.Thread):
 
 
                     if shouldshowupdate:
-                        ctime = localtime.strftime("%-I:%M:%S %p").strip()
-                        print (u"Status at time {0}".format(ctime))
+                        ctime = current_time
+                        print (u"Status at time {0}".ctime)
 
                         with self.musicdata_lock:
                             for item,value in self.musicdata.iteritems():
@@ -309,7 +309,7 @@ class music_controller(threading.Thread):
             logging.debug('Weather service not enabled')
             return False
 
-        if pydPiper_config.WEATHER_SERVICE not in ['wunderground', 'accuweather']:
+        if pydPiper_config.WEATHER_SERVICE not in ['wunderground', 'accuweather', 'weerlive']:
             logging.warning('{0} is not a valid weather service'.format(pydPiper_config.WEATHER_SERVICE))
             return False
 
@@ -455,7 +455,43 @@ class music_controller(threading.Thread):
                             self.musicdata[u'outside_temp_min_formatted'] = outside_temp_min_formatted
                             self.musicdata[u'outside_conditions'] = outside_conditions
 
+            # If using weerlive.nl, sample current condition date every hour
+            elif pydPiper_config.WEATHER_SERVICE == 'weerlive':
+                logging.debug('Requesting current conditions from {0}'.format(pydPiper_config.WEATHER_SERVICE))
+                querystr = 'http://weerlive.nl/api/json-data-10min.php?key=' + pydPiper_config.WEATHER_API + '&locatie=' + pydPiper_config.WEATHER_LOCATION
+                r = requests.get(querystr)
 
+                if self.checkaccuweatherreturn(r.status_code):
+                    try:
+                        res = r.json()
+                        temp = res['liveweer'][0]['temp']
+                        temp_formatted = u"{0}°{1}".format(int(float(temp)),{'fahrenheit':'F', 'celsius': 'C'}.get(pydPiper_config.TEMPERATURE.lower()))
+                        temp_max_f = round((float(res['liveweer'][0]['d0tmax'])*1.8)+32,1)
+                        temp_min_f = round((float(res['liveweer'][0]['d0tmin'])*1.8)+32,1)
+                        temp_max_c = float(res['liveweer'][0]['d0tmax'])
+                        temp_min_c = float(res['liveweer'][0]['d0tmin'])
+                        outside = pydPiper_config.WEATHER_OUTSIDE
+                        outside_temp_max = temp_max_f if pydPiper_config.TEMPERATURE.lower() == 'fahrenheit' else temp_max_c
+                        outside_temp_min = temp_min_f if pydPiper_config.TEMPERATURE.lower() == 'fahrenheit' else temp_min_c
+                        outside_temp_max_formatted = u"{0}°{1}".format(int(outside_temp_max),{'fahrenheit':'F', 'celsius': 'C'}.get(pydPiper_config.TEMPERATURE.lower()))
+                        outside_temp_min_formatted = u"{0}°{1}".format(int(outside_temp_min),{'fahrenheit':'F', 'celsius': 'C'}.get(pydPiper_config.TEMPERATURE.lower()))
+                        outside_conditions = res['liveweer'][0]['samenv']                       
+                        updateFlag = True
+                    except (KeyError, IndexError, ValueError):
+                        logging.warning('weerlive.nl provided a response in an unexpected format.  Received [{0}]'.format(res))
+                        logging.warning(KeyError)
+                        logging.warning(IndexError)
+                        logging.warning(ValueError)
+                    if updateFlag:
+                        logging.debug('Current Temperature is {0}'.format(temp_formatted))
+                        with self.musicdata_lock:
+                            self.musicdata[u'outside_temp'] = temp
+                            self.musicdata[u'outside_temp_formatted'] = temp_formatted
+                            self.musicdata[u'outside_temp_max'] = outside_temp_max
+                            self.musicdata[u'outside_temp_min'] = outside_temp_min
+                            self.musicdata[u'outside_temp_max_formatted'] = outside_temp_max_formatted
+                            self.musicdata[u'outside_temp_min_formatted'] = outside_temp_min_formatted
+                            self.musicdata[u'outside_conditions'] = outside_conditions
 
             # Sleep until next update which occurs every hour
             pause.sleepUntil(time.time()+pause.nextHour(60), exitapp)
