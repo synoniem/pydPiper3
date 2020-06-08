@@ -1253,8 +1253,12 @@ class sequence(object): # Holds a sequence of widgets to display on the screen i
 		# If the condition is true and the sequence has already passed it's minimum time reset the timer
 		if self.expires < time.time() and self.minimum > 0:
 			self.expires = time.time() + self.minimum
-
-		widget, duration, conditional = self.widgets[self.currentwidget]
+			
+		try:
+			widget, duration, conditional = self.widgets[self.currentwidget]
+		except IndexError:
+			pass
+		# Do nothing	
 
 		# Check and respond to restart
 		if restart:
