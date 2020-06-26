@@ -1,13 +1,13 @@
 import sys
 if sys.version_info[0] < 3:
-    import ConfigParser
+    import configparser
 else:
     import configparser
 
 
 
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
 
     import re
 
@@ -276,7 +276,7 @@ if __name__ == u'__main__':
             config.add_section(section['section_name'])
         except:
             pass
-        print ('\n'+section['section_title'].upper()+'\n')
+        print(('\n'+section['section_title'].upper()+'\n'))
 
         process_questions(section['section_name'],section['questions'],config)
 
@@ -294,11 +294,11 @@ if __name__ == u'__main__':
                 config.set(section_name, question['variable'], value)
             if 'followup_questions' in question:
                 if sys.version_info[0] < 3:
-                    for match, followup_questions in question['followup_questions'].iteritems():
+                    for match, followup_questions in question['followup_questions'].items():
                         if re.match(match,value):
                             process_questions(section_name, followup_questions, config)
                 else:
-                    for match, followup_questions in question['followup_questions'].items():
+                    for match, followup_questions in list(question['followup_questions'].items()):
                         if re.match(match,value):
                             process_questions(section_name, followup_questions, config)
 
@@ -307,9 +307,9 @@ if __name__ == u'__main__':
         prompt = question['prompt'] + ' [' + question['default'] + ']: ' if 'default' in question else question['prompt'] + ': '
         while True:
             if sys.version_info[0] < 3:
-                value = raw_input(prompt)
-            else:
                 value = input(prompt)
+            else:
+                value = eval(input(prompt))
 
             if value == '':
                 value = question.get('default','')
@@ -321,7 +321,7 @@ if __name__ == u'__main__':
 
             if value == '?' or value.lower() == 'help':
                 if 'help' in question:
-                    print (question['help'])
+                    print((question['help']))
                 if 'allowed' in question:
                     line = 'Possible values are: '
                     for possible in question['allowed']:
@@ -331,7 +331,7 @@ if __name__ == u'__main__':
                 continue
             if 'allowed' in question:
                 if value not in question['allowed'] and value:
-                    print ('{0} is not a valid value'.format(value))
+                    print(('{0} is not a valid value'.format(value)))
                     continue
 
             if 'mandatory' in question and question['mandatory'] is True and not value:
@@ -343,8 +343,8 @@ if __name__ == u'__main__':
     print ('\nCreating configuration file for pydPiper')
     print ('----------------------------------------')
     if sys.version_info[0] < 3:
-        config = ConfigParser.RawConfigParser()
-        serviceconfig = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
+        serviceconfig = configparser.RawConfigParser()
     else:
         config = configparser.RawConfigParser()
         serviceconfig = configparser.RawConfigParser()

@@ -101,7 +101,7 @@ bigchars = [
 	{'data': [[32, 32, 32], [3, 3, 3]], 'col': 3, 'row': 2, 'char': '_'}, 			# _
 
 	# Special characters
-	{'data': [[111], [32]], 'col': 1, 'row': 2, 'char': u'\xb0'}, 			# degree symbol
+	{'data': [[111], [32]], 'col': 1, 'row': 2, 'char': '\xb0'}, 			# degree symbol
 ]
 
 def generate(msg):
@@ -137,6 +137,6 @@ def generate(msg):
 
 		for i in range(0, rows):
 			for j in range(0, cols):
-				retval[i] += unichr(bigchars[d]['data'][i][j])
+				retval[i] += chr(bigchars[d]['data'][i][j])
 
 	return retval

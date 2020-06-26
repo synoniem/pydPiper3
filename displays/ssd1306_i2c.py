@@ -8,12 +8,12 @@
 #
 
 
-from __future__ import unicode_literals
+
 
 import time, math,logging
-import lcd_display_driver
-import fonts
-import graphics as g
+from . import lcd_display_driver
+from . import fonts
+from . import graphics as g
 from PIL import Image
 import logging
 
@@ -82,9 +82,9 @@ class ssd1306_i2c():
 
 if __name__ == '__main__':
 	import getopt,sys,os
-	import graphics as g
-	import fonts
-	import display
+	from . import graphics as g
+	from . import fonts
+	from . import display
 	import moment
 
 	def processevent(events, starttime, prepost, db, dbp):
@@ -98,12 +98,12 @@ if __name__ == '__main__':
 					dbp[var] = val
 
 
-	logging.basicConfig(format=u'%(asctime)s:%(levelname)s:%(message)s', handlers=[logging.StreamHandler()], level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', handlers=[logging.StreamHandler()], level=logging.DEBUG)
 
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hr:c:",["row=","col=","i2c_address=","i2c_port="])
 	except getopt.GetoptError:
-		print 'ssd1306_i2c.py -r <rows> -c <cols> --i2c_address <addr> --i2c_port <port>'
+		print('ssd1306_i2c.py -r <rows> -c <cols> --i2c_address <addr> --i2c_port <port>')
 		sys.exit(2)
 
 	# Set defaults
@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'ssd1306_i2c.py -r <rows> -c <cols> --i2c_address <addr> --i2c_port <port>'
+			print('ssd1306_i2c.py -r <rows> -c <cols> --i2c_address <addr> --i2c_port <port>')
 			sys.exit()
 		elif opt in ("-r", "--rows"):
 			rows = int(arg)
@@ -188,8 +188,8 @@ if __name__ == '__main__':
 	]
 
 	try:
-		print "SSD1306 OLED Display Test"
-		print "ROWS={0}, COLS={1}, I2C_ADDRESS={2}, I2C_PORT={3}".format(rows,cols,i2c_address,i2c_port)
+		print("SSD1306 OLED Display Test")
+		print("ROWS={0}, COLS={1}, I2C_ADDRESS={2}, I2C_PORT={3}".format(rows,cols,i2c_address,i2c_port))
 
 		lcd = ssd1306_i2c(rows,cols,i2c_address,i2c_port)
 		lcd.clear()
@@ -199,7 +199,7 @@ if __name__ == '__main__':
 
 		starttime = time.time()
 		elapsed = int(time.time()-starttime)
-		timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+		timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
 		dc = display.display_controller((cols,rows))
 		f_path = os.path.join(os.path.dirname(__file__), '../pages_ssd1306.py')
@@ -211,7 +211,7 @@ if __name__ == '__main__':
 			db['elapsed']=elapsed
 			db['utc'] = moment.utcnow()
 			processevent(events, starttime, 'pre', db, dbp)
-			img = dc.next()
+			img = next(dc)
 			processevent(events, starttime, 'post', db, dbp)
 			lcd.update(img)
 			time.sleep(.001)
@@ -226,4 +226,4 @@ if __name__ == '__main__':
 		time.sleep(2)
 		lcd.clear()
 		GPIO.cleanup()
-		print "SSD1306 OLED Display Test Complete"
+		print("SSD1306 OLED Display Test Complete")

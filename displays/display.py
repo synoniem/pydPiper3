@@ -4,7 +4,7 @@
 # Abstract Base class to provide display primitives
 # Written by: Ron Ritchey
 
-from __future__ import unicode_literals
+
 
 import math, abc, logging, time, imp, sys, os
 import moment
@@ -12,11 +12,9 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-import fonts
+from . import fonts
 
-class widget:
-	__metaclass__ = abc.ABCMeta
-
+class widget(metaclass=abc.ABCMeta):
 	def __init__(self, variabledict={ }):
 		# width and height.  In pixels for graphics displays and characters for character displays
 		self.width = 0						# Width of the widget
@@ -36,7 +34,7 @@ class widget:
 
 	# Widgets
 	@abc.abstractmethod
-	def text(self, formatstring, fontpkg, variabledict={ }, variables =[], varwidth = False, size=(0,0), just=u'left'):
+	def text(self, formatstring, fontpkg, variabledict={ }, variables =[], varwidth = False, size=(0,0), just='left'):
 		# Input
 		# 	msg (unicode) -- msg to display
 		#	(w,h) (integer tuple) -- Bounds of the rectangle that message will be written into.  If set to 0, no restriction on size.
@@ -46,7 +44,7 @@ class widget:
 		return
 
 	@abc.abstractmethod
-	def progressbar(self, value, rangeval, size, style=u'square',variabledict={ }):
+	def progressbar(self, value, rangeval, size, style='square',variabledict={ }):
 		# Input
 		#	value (numeric) -- Value of the variable showing progress.
 		#	range (numeric tuple) -- Range of possible values.  Used to calculate percentage complete.
@@ -55,23 +53,26 @@ class widget:
 		return
 
 	@abc.abstractmethod
-	def line(self, (x,y), color=1):
+	def line(self, xxx_todo_changeme, color=1):
 		# Input
 		#	(x,y) (integer  tuple) -- Draw line between origin and x,y.
 		#	color (integer) -- color of the line
+		(x,y) = xxx_todo_changeme
 		return
 
 	@abc.abstractmethod
-	def rectangle(self, (x,y), fill=0, outline=1):
+	def rectangle(self, xxx_todo_changeme1, fill=0, outline=1):
 		# Input
 		#	(x,y) (integer  tuple) -- Lower right of rectanble drawn from the origin
 		#	color (integer) -- color of the rectangle
+		(x,y) = xxx_todo_changeme1
 		return
 
 	@abc.abstractmethod
-	def canvas(self, (w,h)):
+	def canvas(self, xxx_todo_changeme2):
 		# Input
 		#	(w,h) (integer  tuple) -- size of canvas
+		(w,h) = xxx_todo_changeme2
 		return
 
 	@abc.abstractmethod
@@ -84,7 +85,7 @@ class widget:
 		return
 
 	@abc.abstractmethod
-	def scroll(self, widget, direction=u'left', distance=1, speed=1, gap=20, hesitatetype=u'onloop', hesitatetime=2, threshold=0,reset=False):
+	def scroll(self, widget, direction='left', distance=1, speed=1, gap=20, hesitatetype='onloop', hesitatetime=2, threshold=0,reset=False):
 		# Input
 		#	widget (widget) -- Widget to scroll
 		#	direction (unicode) -- What direction to scroll ['left', 'right','up','down']
@@ -114,7 +115,7 @@ class widget:
 		# then if variables are required a series of values seperated by '+' symbols
 
 
-		transforms = name.split(u'|')
+		transforms = name.split('|')
 		if len(transforms) == 0:
 			return ''
 		elif len(transforms) == 1:
@@ -123,42 +124,41 @@ class widget:
 		retval = val
 		# Compute transforms
 		for i in range(1,len(transforms)):
-			transform_request = transforms[i].split(u'+')[0].lower() # Pull request type away from variables
-			if transform_request in [u'onoff',u'truefalse',u'yesno']:
+			transform_request = transforms[i].split('+')[0].lower() # Pull request type away from variables
+			if transform_request in ['onoff','truefalse','yesno']:
 				# Make sure input is a Boolean
 				if type(retval) is bool:
 
-					if transform_request == u'onoff':
-						retval = u'on' if val else u'off'
-					elif transform_request == u'truefalse':
-						retval = u'true' if val else u'false'
-					elif transform_request == u'yesno':
-						retval = u'yes' if val else u'no'
+					if transform_request == 'onoff':
+						retval = 'on' if val else 'off'
+					elif transform_request == 'truefalse':
+						retval = 'true' if val else 'false'
+					elif transform_request == 'yesno':
+						retval = 'yes' if val else 'no'
 				else:
 #					logging.debug(u"Request to perform boolean transform on {0} requires boolean input".format(name))
 					return val
-			elif transform_request in [u'int']:
+			elif transform_request in ['int']:
 				try:
 					retval = int(val)
 				except:
 					# Value not convertible to int
 					retval = 0
-			elif transform_request in [u'upper',u'capitalize',u'title',u'lower']:
+			elif transform_request in ['upper','capitalize','title','lower']:
 				# These all require string input
 
-				if type(retval) is str or type(retval) is unicode:
-					if type(retval) is str:
-						retval = retval.decode()
-					if transform_request == u'upper':
+				if type(retval) is str:
+					
+					if transform_request == 'upper':
 						retval = retval.upper()
-					elif transform_request == u'capitalize':
+					elif transform_request == 'capitalize':
 						retval = retval.capitalize()
-					elif transform_request == u'title':
+					elif transform_request == 'title':
 						retval = retval.title()
-					elif transform_request == u'lower':
+					elif transform_request == 'lower':
 						retval = retval.lower()
 				else:
-					logging.debug(u"Request to perform transform on {0} requires string input".format(name))
+					logging.debug("Request to perform transform on {0} requires string input".format(name))
 					return val
 
 # Time transforms
@@ -168,7 +168,7 @@ class widget:
 # |local - converts utc referenced moment object into an equivalant moment object in the local timezone (as specified in pydPiper_config.TIMEZONE variable)
 # |strftime+s - converts moment object into string formated using the strftime format string provided in the s parameter
 
-			elif transform_request in [ u'timezone', u'strftime' ]:
+			elif transform_request in [ 'timezone', 'strftime' ]:
 				# requires a moment object as input
 
 				tvalues = transforms[i].split('+')[1:]
@@ -177,48 +177,48 @@ class widget:
 
 					if len(tvalues) > 1:
 						# Safe to ignore but logging
-						logging.debug(u"Expected one parameter but received {0}".format(len(values)))
+						logging.debug("Expected one parameter but received {0}".format(len(values)))
 
 					if len(tvalues) == 0:
 						# Requires at least one variable to specify line so will return error in retval
-						logging.debug(u"Expected one parameter but received none")
-						retval = u"Err"
+						logging.debug("Expected one parameter but received none")
+						retval = "Err"
 					else:
 
-						if transform_request == u'timezone':
+						if transform_request == 'timezone':
 							try:
 								retval = retval.timezone(tvalues[0])
 							except ValueError:
 								# Received bad timezone value
 								logging.debug("Cannot convert timezone.  Requested timezone ({0}) is not valid".format(tvalues[0]))
 
-						elif transform_request == u'strftime':
+						elif transform_request == 'strftime':
 							try:
 								retval = retval.strftime(tvalues[0])
 							except:
-								logging.debug(u"Cannot format moment.  Bad strftime value provided ({0})".format(tvalues[0]))
-								retval = u'Err'
-				elif transform_request in [u'strftime'] and type(retval) is int:
+								logging.debug("Cannot format moment.  Bad strftime value provided ({0})".format(tvalues[0]))
+								retval = 'Err'
+				elif transform_request in ['strftime'] and type(retval) is int:
 					retval = time.strftime(tvalues[0], time.gmtime(int(retval)))
 				else:
 					# Bad input provided
-					logging.debug(u'Expected a moment variable but received a {0}'.format(type(retval)))
+					logging.debug('Expected a moment variable but received a {0}'.format(type(retval)))
 
-			elif transform_request in [ u'select' ]:
+			elif transform_request in [ 'select' ]:
 				# select replaces the variable with string based upon a matching pattern.
 				# <variable>|select+matchstring+replacestring+matchstring+replacestring+...
 
 				tvalues = transforms[i].split('+')[1:]
 				if len(tvalues)%2 != 0 or len(tvalues)==0:
 					# Must have pairs of input (match+replace)
-					retval = u'Err'
+					retval = 'Err'
 				else:
 					for i in range(0,len(tvalues),2):
 						if retval == tvalues[i]:
 							retval = tvalues[i+1]
 							break
 					else:
-						retval = u' '
+						retval = ' '
 
 #			elif transform_request in [ u'local' ]:
 #				# requires a moment object as input
@@ -245,25 +245,25 @@ class widget:
 		parms = []
 		try:
 			for k in range(len(variables)):
-				varname = variables[k].split(u'|')[0]
+				varname = variables[k].split('|')[0]
 				val = self.transformvariable(self.variabledict[varname], variables[k])
 				parms.append(val)
 		except KeyError:
-			logging.debug( u"Variable not found in evaltext.  Values requested are {0}".format(variables) )
-			print u"Variable not found in evaltext.  Values requested are {0}".format(variables)
+			logging.debug( "Variable not found in evaltext.  Values requested are {0}".format(variables) )
+			print("Variable not found in evaltext.  Values requested are {0}".format(variables))
 			# Format doesn't match available variables
-			segval = u"VarErr"
+			segval = "VarErr"
 			return segval
 
 		# create segment to display
 		try:
 			segval = formatstring.format(*parms)
 		except:
-			logging.debug( u"Var Error Format {0}, Parms {1} Vars {2}".format(formatstring, parms, variables) )
-			print u"Var Error Format {0}, Parms {1} Vars {2}".format(formatstring, parms, variables)
+			logging.debug( "Var Error Format {0}, Parms {1} Vars {2}".format(formatstring, parms, variables) )
+			print("Var Error Format {0}, Parms {1} Vars {2}".format(formatstring, parms, variables))
 			# Format doesn't match available variables
-			logging.debug(u"Var Error with parm type {0} and format type {1}".format(type(parms), type(formatstring)))
-			segval = u"VarErr"
+			logging.debug("Var Error with parm type {0} and format type {1}".format(type(parms), type(formatstring)))
+			segval = "VarErr"
 
 		return segval
 
@@ -271,7 +271,7 @@ class widget:
 		# variables (unicode array) -- An array containing the names of the variables being used
 		# returns bool based upon whether any variables that have been used have changed since the last time a render was requested
 		for v in variables:
-			v = v.split(u'|')[0]
+			v = v.split('|')[0]
 			try:
 				if self.variabledict[v] != self.currentvardict[v]:
 					return True
@@ -311,9 +311,9 @@ class gwidget(widget):
 					widget,x,y,w,h = e
 					self.place(widget, (x,y), (w,h))
 			return retval
-		elif self.type == u'scroll':
+		elif self.type == 'scroll':
 			return self.scroll(self.widget, self.direction, self.distance, self.speed, self.gap, self.hesitatetype, self.hesitatetime,self.threshold, reset)
-		elif self.type == u'popup':
+		elif self.type == 'popup':
 			return self.popup(self.widget, self.dheight, self.duration, self.pduration)
 		else:
 			# Static content like images, lines, rectangles do not need to be refreshed
@@ -322,15 +322,18 @@ class gwidget(widget):
 	# WIDGETS
 
 	# CANVAS widget functions
-	def canvas(self, (w,h)):
-		self.type = u'canvas'
+	def canvas(self, xxx_todo_changeme3):
+		(w,h) = xxx_todo_changeme3
+		self.type = 'canvas'
 		self.image = Image.new("1", (w,h) )
 		self.updatesize()
 		self.widgets = []
 
-	def add(self, widget, (x,y), (w,h)=(0,0)): # Add a widget to the canvas
+	def add(self, widget, xxx_todo_changeme4, xxx_todo_changeme5=(0,0)): # Add a widget to the canvas
 
-		if self.type != u'canvas':
+		(x,y) = xxx_todo_changeme4
+		(w,h) = xxx_todo_changeme5
+		if self.type != 'canvas':
 			logging.warning("Trying to add a widget to something that is not a canvas")
 			return
 
@@ -339,18 +342,19 @@ class gwidget(widget):
 		return self
 
 	def clear(self): # Erase canvas
-		if self.type != u'canvas':
+		if self.type != 'canvas':
 			logging.warning('Trying to clear a widget that is not a canvas')
 			return
 		self.image = Image.new("1", (self.image.size[0], self.size[1]))
 
-	def place(self, widget, (x,y), size=(0,0)): # Place a widget's image on the canvas
+	def place(self, widget, xxx_todo_changeme6, size=(0,0)): # Place a widget's image on the canvas
 		# Input
 		#	widget (widget): widget to place
 		#	(x,y) (integer tuple): where to place it
 		#	size (integer tuple): how big should it be
-		if self.type != u'canvas':
-			logging.warning(u"Trying to place a widget on something that is not a canvas")
+		(x,y) = xxx_todo_changeme6
+		if self.type != 'canvas':
+			logging.warning("Trying to place a widget on something that is not a canvas")
 			return
 
 		w,h = size
@@ -375,7 +379,7 @@ class gwidget(widget):
 
 		for c in msg:
 
-			if c == u'\n':
+			if c == '\n':
 				maxh = maxh + fy
 				if cx > maxw:
 					maxw = cx
@@ -399,7 +403,7 @@ class gwidget(widget):
 
 		return ((maxw, maxh))
 
-	def text(self, formatstring, variables, fontpkg, varwidth = True, specifiedsize=(0,0), just=u'left'):
+	def text(self, formatstring, variables, fontpkg, varwidth = True, specifiedsize=(0,0), just='left'):
 		# Input
 		# 	formatstring (unicode) -- format string
 		#	variables (unicode array) -- list of variables used to populate formatstring.  Variable values come from variabledict.
@@ -412,14 +416,14 @@ class gwidget(widget):
 		self.currentvardict = { }
 		for v in variables:
 			try:
-				jv = v.split(u'|')[0]
+				jv = v.split('|')[0]
 				self.currentvardict[jv] = self.variabledict[jv]
 			except KeyError:
 				logging.debug('Trying to save state of {0} but it was not found within database'.format(jv))
 				pass
 
 		# save parameters for future updates
-		self.type = u'text'
+		self.type = 'text'
 		self.formatstring = formatstring
 		self.variables = variables
 		self.fontpkg = fontpkg
@@ -465,22 +469,22 @@ class gwidget(widget):
 		for c in msg:
 
 			# If newline, move y to next line (based upon font height) and return x to beginning of line
-			if c == u'\n':
+			if c == '\n':
 				# Place line into image
-				if just == u'left':
+				if just == 'left':
 					ax = 0
-				elif just == u'center':
-					ax = (maxw-cx)/2
+				elif just == 'center':
+					ax = (maxw-cx)//2
 
 				# if this is a character mode display then we need to be careful not to split a character across the character boundary
-				elif just == u'centerchar':
+				elif just == 'centerchar':
 					# If the number of chars is even, then we should be ok
 					if cx % 2 == 0:
-						ax = (maxw-cx)/2
+						ax = (maxw-cx)//2
 					else:
 					# If it's odd though we'll get split so add another character worth of space to the calculation
-						ax = (maxw-cx-fx)/2
-				elif just == u'right':
+						ax = (maxw-cx-fx)//2
+				elif just == 'right':
 					ax = (maxw-cx)
 				self.image.paste(lineimage, (ax, cy))
 				lineimage = Image.new("1", (maxw, fy), 0)
@@ -497,7 +501,7 @@ class gwidget(widget):
 
 			# Adjust charimg if varwidth is False
 			if not varwidth:
-				offset = (fx-charimg.size[0])/2
+				offset = (fx-charimg.size[0])//2
 				charimg = charimg.crop( (-offset,0,fx-offset,fy) )
 				charimg.load()
 
@@ -518,20 +522,20 @@ class gwidget(widget):
 		# self.image.crop((0,0,cx-1, cy+fy))
 
 		# Place last line into image
-		if just == u'left':
+		if just == 'left':
 			ax = 0
-		elif just == u'center':
-			ax = (maxw-cx)/2
+		elif just == 'center':
+			ax = (maxw-cx)//2
 
 		# if this is a character mode display then we need to be careful not to split a character across the character boundary
-		elif just == u'centerchar':
+		elif just == 'centerchar':
 			# If the number of chars is even, then we should be ok
 			if cx % 2 == 0:
-				ax = (maxw-cx)/2
+				ax = (maxw-cx)//2
 			else:
 			# If it's odd though we'll get split so add another character worth of space to the calculation
-				ax = (maxw-cx-fx)/2
-		elif just == u'right':
+				ax = (maxw-cx-fx)//2
+		elif just == 'right':
 			ax = (maxw-cx)
 		self.image.paste(lineimage, (ax, cy))
 
@@ -539,7 +543,7 @@ class gwidget(widget):
 
 		return True
 
-	def ttext(self, formatstring, variables, fontpkg, varwidth = True, specifiedsize=8, just=u'left'):
+	def ttext(self, formatstring, variables, fontpkg, varwidth = True, specifiedsize=8, just='left'):
 		# Input
 		# 	formatstring (unicode) -- format string
 		#	variables (unicode array) -- list of variables used to populate formatstring.  Variable values come from variabledict.
@@ -552,14 +556,14 @@ class gwidget(widget):
 		self.currentvardict = { }
 		for v in variables:
 			try:
-				jv = v.split(u'|')[0]
+				jv = v.split('|')[0]
 				self.currentvardict[jv] = self.variabledict[jv]
 			except KeyError:
 				logging.debug('Trying to save state of {0} but it was not found within database'.format(jv))
 				pass
 
 		# save parameters for future updates
-		self.type = u'ttext'
+		self.type = 'ttext'
 		self.formatstring = formatstring
 		self.variables = variables
 		self.fontpkg = fontpkg
@@ -605,20 +609,20 @@ class gwidget(widget):
 		# self.image.crop((0,0,cx-1, cy+fy))
 
 		# Place last line into image
-		if just == u'left':
+		if just == 'left':
 			ax = 0
-		elif just == u'center':
-			ax = (maxw-cx)/2
+		elif just == 'center':
+			ax = (maxw-cx)//2
 
 		# if this is a character mode display then we need to be careful not to split a character across the character boundary
-		elif just == u'centerchar':
+		elif just == 'centerchar':
 			# If the number of chars is even, then we should be ok
 			if cx % 2 == 0:
-				ax = (maxw-cx)/2
+				ax = (maxw-cx)//2
 			else:
 			# If it's odd though we'll get split so add another character worth of space to the calculation
-				ax = (maxw-cx-fx)/2
-		elif just == u'right':
+				ax = (maxw-cx-fx)//2
+		elif just == 'right':
 			ax = (maxw-cx)
 		self.image.paste(textimage, (ax, 0))
 
@@ -652,7 +656,7 @@ class gwidget(widget):
 		return True
 
 	# PROGRESSBAR widget function
-	def progressbar(self, value, rangeval, size, style=u'square'):
+	def progressbar(self, value, rangeval, size, style='square'):
 		# Input
 		#	value (numeric) -- Value of the variable showing progress.
 		#	rangeval (numeric tuple) -- Range of possible values.  Used to calculate percentage complete.
@@ -662,7 +666,7 @@ class gwidget(widget):
 		self.variables = []
 
 		# Convert variable to value if needed
-		if type(value) is unicode:
+		if type(value) is str:
 			v = self.variabledict[value] if value in self.variabledict else 0
 			if value in self.variabledict:
 				self.variables.append(value)
@@ -673,7 +677,7 @@ class gwidget(widget):
 
 		l,h = rangeval
 		# Convert range low to value if needed
-		if type(l) is unicode:
+		if type(l) is str:
 			rvlow = self.variabledict[l] if l in self.variabledict else 0
 			if l in self.variabledict:
 				self.variables.append(l)
@@ -683,7 +687,7 @@ class gwidget(widget):
 			rvlow = 0
 
 		# Convert range high to value if needed
-		if type(h) is unicode:
+		if type(h) is str:
 			rvhigh = self.variabledict[h] if h in self.variabledict else 0
 			if h in self.variabledict:
 				self.variables.append(h)
@@ -726,7 +730,7 @@ class gwidget(widget):
 		# make image to place progress bar
 		self.image = Image.new("1", size, 0)
 
-		if style == u'square':
+		if style == 'square':
 			draw = ImageDraw.Draw(self.image)
 			if height > 2:
 				draw.line( (0,0,0,height-1),1)
@@ -763,7 +767,7 @@ class gwidget(widget):
 		self.variables = []
 
 		# Convert variable to value if needed
-		if type(value) is unicode:
+		if type(value) is str:
 			v = self.variabledict[value] if value in self.variabledict else 0
 			if value in self.variabledict:
 				self.variables.append(value)
@@ -774,7 +778,7 @@ class gwidget(widget):
 
 		l,h = rangeval
 		# Convert range low to value if needed
-		if type(l) is unicode:
+		if type(l) is str:
 			rvlow = self.variabledict[l] if l in self.variabledict else 0
 			if l in self.variabledict:
 				self.variables.append(l)
@@ -784,7 +788,7 @@ class gwidget(widget):
 			rvlow = 0
 
 		# Convert range high to value if needed
-		if type(h) is unicode:
+		if type(h) is str:
 			rvhigh = self.variabledict[h] if h in self.variabledict else 0
 			if h in self.variabledict:
 				self.variables.append(h)
@@ -862,12 +866,13 @@ class gwidget(widget):
 
 
 	# LINE widget function
-	def line(self, (x,y), color=1):
+	def line(self, xxx_todo_changeme7, color=1):
 		# Input
 		#	(x,y) (integer tuple) -- Draw a line from the origin to x,y
 		#	color -- color to use for the line
 
 		# Does image exist yet?
+		(x,y) = xxx_todo_changeme7
 		if self.image == None:
 			self.image = Image.new("1", (x+1, y+1), 0)
 		else:
@@ -887,12 +892,13 @@ class gwidget(widget):
 		return True
 
 	# RECTANGLE widget function
-	def rectangle(self, (x,y), fill=0, outline=1):
+	def rectangle(self, xxx_todo_changeme8, fill=0, outline=1):
 		# Input
 		#	(x,y) (integer tuple) -- Bottom left and bottom right of rectangle drawn from origin
 		#	color -- color to use for the rectangle
 
 		# Does image exist yet?
+		(x,y) = xxx_todo_changeme8
 		if self.image == None:
 			self.image = Image.new("1", (x+1, y+1), 0)
 		else:
@@ -924,7 +930,7 @@ class gwidget(widget):
 		try:
 			self.popped
 		except:
-			self.type = u'popup'
+			self.type = 'popup'
 			self.popped = False
 			self.end = time.time() + duration
 			self.image = widget.image
@@ -967,7 +973,7 @@ class gwidget(widget):
 		return True
 
 	# SCROLL widget function
-	def scroll(self, widget, direction=u'left', distance=1, speed=1, gap=20, hesitatetype=u'onloop', hesitatetime=2, threshold=0, reset=False): # Set up for scrolling
+	def scroll(self, widget, direction='left', distance=1, speed=1, gap=20, hesitatetype='onloop', hesitatetime=2, threshold=0, reset=False): # Set up for scrolling
 		# Input
 		#	widget (widget) -- Widget to scroll
 		#	direction (unicode) -- What direction to scroll ['left', 'right','up','down']
@@ -989,7 +995,7 @@ class gwidget(widget):
 			self.end
 		except:
 			retval = True
-			self.type= u'scroll'
+			self.type= 'scroll'
 			self.start = time.time()
 			if hesitatetype not in ['onstart', 'onloop']:
 				self.end = 0
@@ -1015,12 +1021,12 @@ class gwidget(widget):
 			self.threshold = threshold
 
 			# Make sure direction is valid.  Set to 'left' if not.
-			if self.direction not in [u'left',u'right',u'up',u'down']:
-				self.direction = u'left'
+			if self.direction not in ['left','right','up','down']:
+				self.direction = 'left'
 
 			# Set height and width for expanded image
-			self.eheight = self.widget.size[1] if self.direction in [u'left',u'right'] else self.widget.size[1]+gap
-			self.ewidth = self.widget.size[0]+gap if self.direction in [u'left',u'right'] else self.widget.size[0]
+			self.eheight = self.widget.size[1] if self.direction in ['left','right'] else self.widget.size[1]+gap
+			self.ewidth = self.widget.size[0]+gap if self.direction in ['left','right'] else self.widget.size[0]
 
 			# Update image using current index values
 			self.expanded_image = self.widget.image.copy().crop( (0,0,self.ewidth,self.eheight) )
@@ -1070,8 +1076,8 @@ class gwidget(widget):
 			self.speedcount = self.speed
 
 			# Set height and width for expanded image
-			self.eheight = self.widget.size[1] if self.direction in [u'left',u'right'] else self.widget.size[1]+gap
-			self.ewidth = self.widget.size[0]+gap if self.direction in [u'left',u'right'] else self.widget.size[0]
+			self.eheight = self.widget.size[1] if self.direction in ['left','right'] else self.widget.size[1]+gap
+			self.ewidth = self.widget.size[0]+gap if self.direction in ['left','right'] else self.widget.size[0]
 
 			# Update image using current index values
 			self.expanded_image = self.widget.image.copy().crop( (0,0,self.ewidth,self.eheight) )
@@ -1102,19 +1108,19 @@ class gwidget(widget):
 		if self.end > time.time() or not self.shouldscroll or speeddelay:
 			return retval
 
-		if direction == u'left':
+		if direction == 'left':
 			self.hindex += distance
 			if self.hindex >= self.ewidth:
 				self.hindex = 0
-		elif direction == u'right':
+		elif direction == 'right':
 			self.hindex -= distance
 			if self.hindex < 0:
 				self.hindex = self.ewidth
-		elif direction == u'up':
+		elif direction == 'up':
 			self.vindex += distance
 			if self.vindex >= self.eheight:
 				self.vindex = 0
-		elif direction == u'down':
+		elif direction == 'down':
 			self.vindex -= distance
 			if self.vindex < 0:
 				self.vindex = self.eheight
@@ -1123,40 +1129,40 @@ class gwidget(widget):
 		self.expanded_image = self.widget.image.copy().crop( (0,0,self.ewidth,self.eheight) )
 
 		# Update image using current index values
-		if direction in [u'left',u'right']:
+		if direction in ['left','right']:
 			hregion = self.expanded_image.crop( (0,0,self.hindex,self.eheight) )
 			hbody = self.expanded_image.crop( (self.hindex,0,self.ewidth,self.eheight) )
 			self.image.paste( hbody, (0,0) )
 			self.image.paste( hregion, (self.ewidth - self.hindex, 0) )
-		elif direction in [u'up',u'down']:
+		elif direction in ['up','down']:
 			vregion = expanded_image.crop( (0,0,self.ewidth,self.vindex) )
 			vbody = expanded_image.crop( (0,self.vindex,self.ewidth,self.eheight) )
 			self.image.paste( vbody, (0,0) )
 			self.image.paste( vregion, (0, self.eheight - self.vindex) )
 
-		if hesitatetype == u'onloop' and ( (self.hindex == 0 and self.direction in [u'left',u'right']) or (self.vindex == 0 and self.direction in [u'up',u'down'])):
+		if hesitatetype == 'onloop' and ( (self.hindex == 0 and self.direction in ['left','right']) or (self.vindex == 0 and self.direction in ['up','down'])):
 			self.start = time.time()
 			self.end = self.start + hesitatetime
 
 		return True
 
 class gwidgetText(gwidget):
-	def __init__(self, formatstring, fontpkg, variabledict={ }, variables =[], varwidth = True, size=(0,0), just=u'left'):
+	def __init__(self, formatstring, fontpkg, variabledict={ }, variables =[], varwidth = True, size=(0,0), just='left'):
 		super(gwidgetText, self).__init__(variabledict)
 		self.text(formatstring, variables, fontpkg, varwidth, size, just)
 
 class gwidgetTText(gwidget):
-	def __init__(self, formatstring, fontpkg, variabledict={ }, variables =[], varwidth = True, size=8, just=u'left'):
+	def __init__(self, formatstring, fontpkg, variabledict={ }, variables =[], varwidth = True, size=8, just='left'):
 		super(gwidgetTText, self).__init__(variabledict)
 		self.ttext(formatstring, variables, fontpkg, varwidth, size, just)
 
 class gwidgetProgressBar(gwidget):
-	def __init__(self, value, rangeval, size, style=u'square',variabledict={ }):
+	def __init__(self, value, rangeval, size, style='square',variabledict={ }):
 		super(gwidgetProgressBar, self).__init__(variabledict)
 		self.progressbar(value, rangeval, size, style)
 
 class gwidgetProgressImageBar(gwidget):
-	def __init__(self, maskimage, value, rangeval, direction=u'left',variabledict={ }):
+	def __init__(self, maskimage, value, rangeval, direction='left',variabledict={ }):
 		super(gwidgetProgressImageBar, self).__init__(variabledict)
 		self.progressimagebar(maskimage, value, rangeval, direction)
 
@@ -1166,17 +1172,20 @@ class gwidgetImage(gwidget):
 		self.imagewidget(image, size)
 
 class gwidgetLine(gwidget):
-	def __init__(self, (x,y), color=1):
+	def __init__(self, xxx_todo_changeme9, color=1):
+		(x,y) = xxx_todo_changeme9
 		super(gwidgetLine, self).__init__()
 		self.line((x,y), color)
 
 class gwidgetRectangle(gwidget):
-	def __init__(self, (x,y), fill=0, outline=1):
+	def __init__(self, xxx_todo_changeme10, fill=0, outline=1):
+		(x,y) = xxx_todo_changeme10
 		super(gwidgetRectangle, self).__init__()
 		self.rectangle((x,y), fill, outline)
 
 class gwidgetCanvas(gwidget):
-	def __init__(self, (w,h)):
+	def __init__(self, xxx_todo_changeme11):
+		(w,h) = xxx_todo_changeme11
 		super(gwidgetCanvas, self).__init__()
 		self.canvas((w,h))
 
@@ -1186,7 +1195,7 @@ class gwidgetPopup(gwidget):
 		self.popup(widget, dheight, duration, pduration)
 
 class gwidgetScroll(gwidget):
-	def __init__(self, widget, direction=u'left', distance=1, speed=1, gap=20, hesitatetype=u'onloop', hesitatetime=2, threshold=0, reset=False):
+	def __init__(self, widget, direction='left', distance=1, speed=1, gap=20, hesitatetype='onloop', hesitatetime=2, threshold=0, reset=False):
 		super(gwidgetScroll, self).__init__()
 		self.scroll(widget, direction, distance, speed, gap, hesitatetype, hesitatetime,threshold,reset)
 
@@ -1242,10 +1251,10 @@ class sequence(object): # Holds a sequence of widgets to display on the screen i
 			# Could not evaluate conditional so returning False
 			return False
 
- 	def get(self, restart=False): # Return current widget (or None) if none are active
+	def get(self, restart=False):
+		# Return current widget (or None) if none are active
 		# Input
-		#	restart (bool) -- If True resets the sequence to the first widget on the list
-
+		# restart (bool) -- If True resets the sequence to the first widget on the list
 		# Evaluate sequence conditional and check for cooling period.
 		if self.expires < time.time() and (not self.evalconditional(self.conditional) or self.coolingexpires > time.time()):
 			return None
@@ -1324,7 +1333,7 @@ class display_controller(object):
 
 		# Load fonts
 		try:
-			for k,v in self.pages.FONTS.iteritems():
+			for k,v in self.pages.FONTS.items():
 				fontfile = v['file'] if 'file' in v else ''
 				isdefault = v['default'] if 'default' in v else False
 				if fontfile:
@@ -1344,11 +1353,11 @@ class display_controller(object):
 
 		# Load truetype fonts
 		try:
-			for k,v in self.pages.TRUETYPE_FONTS.iteritems():
+			for k,v in self.pages.TRUETYPE_FONTS.items():
 				fontfile = v['file'] if 'file' in v else ''
 				fontsize = v['size'] if 'size' in v else 8
 				if fontfile:
-#					logging.debug('Loading font {0}'.format(k))
+					logging.debug('Loading font {0}'.format(k))
 					try:
 						v['fontpkg'] = ImageFont.truetype(font=fontfile, size=fontsize)
 					except IOError:
@@ -1368,12 +1377,13 @@ class display_controller(object):
 
 		try:
 			# Load images
-			for k,v in self.pages.IMAGES.iteritems():
+			for k,v in self.pages.IMAGES.items():
 				imagefile = v['file'] if 'file' in v else ''
 				if imagefile:
 					logging.debug('Loading image {0}'.format(k))
 					try:
 						i_path = os.path.join(os.path.dirname(__file__), 'images', imagefile)
+						logging.debug('Directory progbar {0}'.format(i_path))
 						v['image'] = Image.open(i_path)
 					except IOError:
 						logging.critical('Failed to open file {0} for image {1}'.format(i_path, k))
@@ -1384,7 +1394,7 @@ class display_controller(object):
 			pass
 
 		# Add type field to CANVAS widgets
-		for k,v in self.pages.CANVASES.iteritems():
+		for k,v in self.pages.CANVASES.items():
 			v['type'] = 'canvas'
 
 		self.loadwidgets(self.pages.WIDGETS)
@@ -1396,7 +1406,7 @@ class display_controller(object):
 	def loadwidgets(self, pageWidgets): # Load widgets. Return any widgets that could not be loaded because a widget contained within it was not found
 
 		# Load widgets
-		for k,v in pageWidgets.iteritems():
+		for k,v in pageWidgets.items():
 			typeval = v['type'].lower() if 'type' in v else ''
 
 #			logging.debug('Loading widget {0}'.format(k))
@@ -1552,7 +1562,7 @@ class display_controller(object):
 			# Add widget to widget list
 			self.widgets[k] = widget
 
-	def next(self): # Compute and return the next image to display
+	def __next__(self): # Compute and return the next image to display
 		active = []
 		img = None
 
@@ -1626,10 +1636,10 @@ class display_controller(object):
 
 def printsequences(seq):
 	for s in seq:
-		print "SEQUENCE"
-		print '  Canvases      : {0}'.format(len(s.widgets))
-		print '  Conditional   : {0}'.format(s.conditional)
-		print '  Cooling Period: {0}'.format(s.coolingperiod)
+		print("SEQUENCE")
+		print('  Canvases      : {0}'.format(len(s.widgets)))
+		print('  Conditional   : {0}'.format(s.conditional))
+		print('  Cooling Period: {0}'.format(s.coolingperiod))
 
 def processevent(events, starttime, prepost, db, dbp):
 	for evnt in events:
@@ -1643,14 +1653,14 @@ def processevent(events, starttime, prepost, db, dbp):
 
 if __name__ == '__main__':
 
-	import graphics as g
+	from . import graphics as g
 	import moment
 
 	starttime = time.time()
 	elapsed = int(time.time()-starttime)
-	timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+	timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
-	logging.basicConfig(format=u'%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 
 	db = {
 			'actPlayer':'mpd',
@@ -1713,7 +1723,7 @@ if __name__ == '__main__':
 
 	starttime = time.time()
 	elapsed = int(time.time()-starttime)
-	timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+	timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
 	starttime=time.time()
 	while True:
@@ -1724,7 +1734,7 @@ if __name__ == '__main__':
 		# db['time_formatted'] = current_time
 
 		processevent(events, starttime, 'pre', db, dbp)
-		img = dc.next()
+		img = next(dc)
 		processevent(events, starttime, 'post', db, dbp)
 		frame = g.getframe( img, 0,0, 80,16 )
 		g.show( frame, 80, int(math.ceil(16/8.0)))

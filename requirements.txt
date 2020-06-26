@@ -1,3 +1,4 @@
+Pillow
 moment
 python-mpd2
 pyLMS

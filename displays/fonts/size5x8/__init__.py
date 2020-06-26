@@ -2,61 +2,61 @@ __all__ = [ "player", "playing", "repeat_all", "repeat_once", "shuffle", "speake
 
 
 try:
-	import player
+	from . import player
 except ImportError:
 	pass
 
 try:
-	import playing
+	from . import playing
 except ImportError:
 	pass
 
 try:
-	import repeat_all
+	from . import repeat_all
 except ImportError:
 	pass
 
 try:
-	import repeat_once
+	from . import repeat_once
 except ImportError:
 	pass
 
 try:
-	import shuffle
+	from . import shuffle
 except ImportError:
 	pass
 
 try:
-	import speaker
+	from . import speaker
 except ImportError:
 	pass
 
 try:
-	import volume
+	from . import volume
 except ImportError:
 	pass
 
 try:
-	import system
+	from . import system
 except ImportError:
 	pass
 
 try:
-	import bigclock
+	from . import bigclock
 except ImportError:
 	pass
 
 try:
-	import bigchars
+	from . import bigchars
 except ImportError:
 	pass
 
 try:
-	import bigplay
+	from . import bigplay
 except ImportError:
 	pass
 
 try:
-	import latin1
+	from . import latin1
 except ImportError:
 	pass

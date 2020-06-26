@@ -1,6 +1,6 @@
 import logging
 
-import size5x8
+from . import size5x8
 
 
 def map(fontpkgname):

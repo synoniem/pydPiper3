@@ -1,11 +1,11 @@
-FROM arm32v6/python:3-alpine
+FROM arm32v7/python:2-alpine
 
 WORKDIR /app
 ADD requirements.txt /app
 RUN apk update && apk add \
-  python3-dev \
-  py3-pip \
-  py3-smbus \
+  python-dev \
+  py-pip \
+  py-smbus \
   freetype-dev \
   jpeg-dev \
   ttf-dejavu \
@@ -13,7 +13,6 @@ RUN apk update && apk add \
   gcc \
   linux-headers \
   bash \
-  py3-pillow && rm -rf /var/cache/apk/*
-RUN pip3 uninstall PIL
-RUN pip3 install -r requirements.txt
+  py-pillow && rm -rf /var/cache/apk/*
+RUN pip install -r requirements.txt
 CMD /bin/bash

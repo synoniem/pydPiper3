@@ -7,4 +7,4 @@ sudo systemctl start docker
 sudo docker pull dhrone/pydpiper:v0.31-alpha
 
 echo 'Testing docker\n'
-sudo docker run hello-world
+sudo docker run -rm hello-world

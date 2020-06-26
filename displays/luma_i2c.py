@@ -8,12 +8,12 @@
 #
 
 
-from __future__ import unicode_literals
+
 
 import time, math,logging
-import lcd_display_driver
-import fonts
-import graphics as g
+from . import lcd_display_driver
+from . import fonts
+from . import graphics as g
 from PIL import Image
 import logging
 
@@ -34,7 +34,7 @@ except:
 
 class luma_i2c():
 
-	def __init__(self, rows=64, cols=128, i2c_address=0x3d, i2c_port=1, devicetype=u'ssd1306'):
+	def __init__(self, rows=64, cols=128, i2c_address=0x3d, i2c_port=1, devicetype='ssd1306'):
 
 		self.i2c_address = i2c_address
 		self.i2c_port = i2c_port
@@ -50,15 +50,15 @@ class luma_i2c():
 
 		serial = i2c(port=i2c_port, address=i2c_address)
 
-		if devicetype.lower() == u'ssd1306':
+		if devicetype.lower() == 'ssd1306':
 			self.device = ssd1306(serial)
-		elif devicetype.lower() == u'sh1106':
+		elif devicetype.lower() == 'sh1106':
 			self.device = sh1106(serial)
-		elif devicetype.lower() == u'ssd1322':
+		elif devicetype.lower() == 'ssd1322':
 			self.device = ssd1322(serial)
-		elif devicetype.lower() == u'ssd1325':
+		elif devicetype.lower() == 'ssd1325':
 			self.device = ssd1325(serial)
-		elif devicetype.lower() == u'ssd1331':
+		elif devicetype.lower() == 'ssd1331':
 			self.device = ssd1331(serial)
 		else:
 			raise ValueError('{0} not a recognized luma device type'.format(devicetype))
@@ -98,9 +98,9 @@ class luma_i2c():
 
 if __name__ == '__main__':
 	import getopt,sys,os
-	import graphics as g
-	import fonts
-	import display
+	from . import graphics as g
+	from . import fonts
+	from . import display
 	import moment
 
 	def processevent(events, starttime, prepost, db, dbp):
@@ -114,12 +114,12 @@ if __name__ == '__main__':
 					dbp[var] = val
 
 
-	logging.basicConfig(format=u'%(asctime)s:%(levelname)s:%(message)s', handlers=[logging.StreamHandler()], level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', handlers=[logging.StreamHandler()], level=logging.DEBUG)
 
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hr:c:",["row=","col=","i2c_address=","i2c_port=","devicetype="])
 	except getopt.GetoptError:
-		print 'luma_i2c.py -r <rows> -c <cols> --devicetype <devicetype> --i2c_address <addr> --i2c_port <port>'
+		print('luma_i2c.py -r <rows> -c <cols> --devicetype <devicetype> --i2c_address <addr> --i2c_port <port>')
 		sys.exit(2)
 
 	# Set defaults
@@ -127,11 +127,11 @@ if __name__ == '__main__':
 	cols = 128
 	i2c_address = 0x3d
 	i2c_port = 1
-	devicetype = u'ssd1306'
+	devicetype = 'ssd1306'
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'luma_i2c.py -r <rows> -c <cols> --devicetype <devicetype> --i2c_address <addr> --i2c_port <port>\nDevice types can be sh1106, ssd1306, ssd1322, ssd1325, and ssd1331'
+			print('luma_i2c.py -r <rows> -c <cols> --devicetype <devicetype> --i2c_address <addr> --i2c_port <port>\nDevice types can be sh1106, ssd1306, ssd1322, ssd1325, and ssd1331')
 			sys.exit()
 		elif opt in ("-r", "--rows"):
 			rows = int(arg)
@@ -208,8 +208,8 @@ if __name__ == '__main__':
 
 	DISPLAY_OK = False
 	try:
-		print "LUMA OLED Display Test"
-		print "ROWS={0}, COLS={1}, DEVICETYPE={4}, I2C_ADDRESS={2}, I2C_PORT={3}".format(rows,cols,i2c_address,i2c_port,devicetype)
+		print("LUMA OLED Display Test")
+		print("ROWS={0}, COLS={1}, DEVICETYPE={4}, I2C_ADDRESS={2}, I2C_PORT={3}".format(rows,cols,i2c_address,i2c_port,devicetype))
 
 		lcd = luma_i2c(rows,cols,i2c_address,i2c_port,devicetype)
 
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 
 		starttime = time.time()
 		elapsed = int(time.time()-starttime)
-		timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+		timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
 		dc = display.display_controller((cols,rows))
 		f_path = os.path.join(os.path.dirname(__file__), '../pages_ssd1306.py')
@@ -234,7 +234,7 @@ if __name__ == '__main__':
 			db['elapsed']=elapsed
 			db['utc'] = moment.utcnow()
 			processevent(events, starttime, 'pre', db, dbp)
-			img = dc.next()
+			img = next(dc)
 			processevent(events, starttime, 'post', db, dbp)
 			lcd.update(img)
 			time.sleep(.001)
@@ -249,4 +249,4 @@ if __name__ == '__main__':
 			lcd.message("Goodbye!", 0, 0, True)
 			time.sleep(2)
 			lcd.clear()
-		print "Luma OLED Display Test Complete"
+		print("Luma OLED Display Test Complete")

@@ -20,12 +20,12 @@
 # Documenation for the similar Winstar WS0010 board currently available at
 # http://www.picaxe.com/docs/oled.pdf
 
-from __future__ import unicode_literals
+
 
 import time, math,logging
-import lcd_display_driver
-import fonts
-import graphics as g
+from . import lcd_display_driver
+from . import fonts
+from . import graphics as g
 from PIL import Image
 import logging
 
@@ -216,9 +216,9 @@ class winstar_weg(lcd_display_driver.lcd_display_driver):
 
 if __name__ == '__main__':
 	import getopt,sys,os
-	import graphics as g
-	import fonts
-	import display
+	from . import graphics as g
+	from . import fonts
+	from . import display
 	import moment
 
 	def processevent(events, starttime, prepost, db, dbp):
@@ -232,12 +232,12 @@ if __name__ == '__main__':
 					dbp[var] = val
 
 
-	logging.basicConfig(format=u'%(asctime)s:%(levelname)s:%(message)s', handlers=[logging.StreamHandler()], level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', handlers=[logging.StreamHandler()], level=logging.DEBUG)
 
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hr:c:",["row=","col=","rs=","e=","d4=","d5=","d6=", "d7="])
 	except getopt.GetoptError:
-		print 'winstar_weg.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>'
+		print('winstar_weg.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>')
 		sys.exit(2)
 
 	# Set defaults
@@ -254,7 +254,7 @@ if __name__ == '__main__':
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'winstar_weg.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>'
+			print('winstar_weg.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>')
 			sys.exit()
 		elif opt in ("-r", "--rows"):
 			rows = int(arg)
@@ -333,8 +333,8 @@ if __name__ == '__main__':
 
 	try:
 		pins = [d4, d5, d6, d7]
-		print "Winstar OLED Display Test"
-		print "ROWS={0}, COLS={1}, RS={2}, E={3}, Pins={4} Delay Microseconds={5}".format(rows,cols,rs,e,pins,enable)
+		print("Winstar OLED Display Test")
+		print("ROWS={0}, COLS={1}, RS={2}, E={3}, Pins={4} Delay Microseconds={5}".format(rows,cols,rs,e,pins,enable))
 
 		lcd = winstar_weg(rows,cols,rs,e,[d4, d5, d6, d7],enable)
 		lcd.clear()
@@ -344,7 +344,7 @@ if __name__ == '__main__':
 
 		starttime = time.time()
 		elapsed = int(time.time()-starttime)
-		timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+		timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
 		dc = display.display_controller((80,16))
 		f_path = os.path.join(os.path.dirname(__file__), 'pages_test.py')
@@ -356,7 +356,7 @@ if __name__ == '__main__':
 			db['elapsed']=elapsed
 			db['utc'] = moment.utcnow()
 			processevent(events, starttime, 'pre', db, dbp)
-			img = dc.next()
+			img = next(dc)
 			processevent(events, starttime, 'post', db, dbp)
 			lcd.update(img)
 			time.sleep(.1)
@@ -371,4 +371,4 @@ if __name__ == '__main__':
 		time.sleep(2)
 		lcd.clear()
 		GPIO.cleanup()
-		print "Winstar OLED Display Test Complete"
+		print("Winstar OLED Display Test Complete")

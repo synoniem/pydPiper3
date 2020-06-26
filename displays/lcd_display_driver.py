@@ -1,6 +1,6 @@
 # lcd_display_driver - base class for lcd or oled 16x2 or 20x4 displays
-
-import abc, fonts, time
+import displays.fonts
+import abc,time
 import math
 from PIL import Image
 
@@ -8,15 +8,10 @@ try:
 	import RPi.GPIO as GPIO
 	GPIO_INSTALLED=True
 except:
-	print "GPIO not installed"
+	print("GPIO not installed")
 	GPIO_INSTALLED=False
 
-class lcd_display_driver:
-	__metaclass__ = abc.ABCMeta
-
-	# Need to decide whether custom fonts live in the driver or the display.
-	# THinking right now, they should live in the base driver class.
-
+class lcd_display_driver(metaclass=abc.ABCMeta):
 	FONTS_SUPPORTED = True
 
 	def __init__(self, rows, columns, enable_duration):
@@ -111,7 +106,7 @@ class lcd_display_driver:
 						retline[j] |= 1<<bh
 					except IndexError as e:
 						# WTF
-						print "width = {0}".format(width)
+						print("width = {0}".format(width))
 						raise e
 			# If we've written a full byte, start a new retline
 			bh += 1
@@ -156,22 +151,22 @@ class lcd_display_driver:
 			# BLINKON - Turns blinking on
 			# BLINKOFF - Turns blinking off
 
-		if cmd == u"CLEAR":
+		if cmd == "CLEAR":
 			self.clear()
-		elif cmd == u"DISPLAYON":
+		elif cmd == "DISPLAYON":
 			self.displayon()
-		elif cmd == u"DISPLAYOFF":
+		elif cmd == "DISPLAYOFF":
 			self.displayoff()
-		elif cmd == u"CURSORON":
+		elif cmd == "CURSORON":
 			self.cursoron()
-		elif cmd == u"CURSOROFF":
+		elif cmd == "CURSOROFF":
 			self.cursoroff()
-		elif cmd == u"BLINKON":
+		elif cmd == "BLINKON":
 			self.blinkon()
-		elif cmd == u"BLINKOFF":
+		elif cmd == "BLINKOFF":
 			self.blinkoff()
 		else:
-			raise RuntimeError(u'Command {0} not supported'.format(cmd))
+			raise RuntimeError('Command {0} not supported'.format(cmd))
 
 	@abc.abstractmethod
 	def cleanup(self):

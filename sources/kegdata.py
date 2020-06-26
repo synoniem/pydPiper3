@@ -3,11 +3,11 @@
 
 # kegdata service to read about key status
 # Written by: Ron Ritchey
-from __future__ import unicode_literals
 
-import json, threading, logging, Queue, time, getopt, sys, logging
+
+import json, threading, logging, queue, time, getopt, sys, logging
 import RPi.GPIO as GPIO
-from hx711 import HX711
+from .hx711 import HX711
 
 
 
@@ -32,19 +32,19 @@ class kegdata():
 		'weight':320
 	}
 	varcheck = {
-		u'unicode':
+		'unicode':
 		[
-			u'name',
-			u'description',
+			'name',
+			'description',
 		],
-		u'int':
+		'int':
 		[
-			u'weight',
+			'weight',
 		],
-		u'float':
+		'float':
 		[
-			u'ABV',
-			u'IBU',
+			'ABV',
+			'IBU',
 		]
 	}
 
@@ -53,7 +53,7 @@ class kegdata():
 		self.kegdata = self.kegdata_init
 		self.kegdata_prev = { }
 
-		print "Initializing keg data service"
+		print("Initializing keg data service")
 
 		self.hx = HX711(4,17)
 		self.hx.set_reading_format("LSB", "MSB")
@@ -83,26 +83,26 @@ class kegdata():
 
 	def validatekegvars(self, vars):
 
-		for vtype, members in self.varcheck.iteritems():
+		for vtype, members in self.varcheck.items():
 
-			if vtype == u'unicode':
+			if vtype == 'unicode':
 				for v in members:
 					try:
-						if type(vars[v]) is unicode:
+						if type(vars[v]) is str:
 							continue
 						if type(vars[v]) is None:
-							vars[v] = u""
+							vars[v] = ""
 						elif type(vars[v]) is str:
-							logging.debug(u"Received string in {0}.  Converting to Unicode".format(v))
+							logging.debug("Received string in {0}.  Converting to Unicode".format(v))
 							vars[v] = vars[v].decode()
 						else:
 							# This happens so often when playing from webradio that I'm disabling logging for now.
 #							logging.debug(u"Received non-string type {0} in {1}.  Converting to null".format(type(vars[v]),v))
-							vars[v] = u""
+							vars[v] = ""
 					except KeyError:
-						logging.debug(u"Missing required value {0}.  Adding empty version".format(v))
-						vars[v] = u""
-			elif vtype == u'bool':
+						logging.debug("Missing required value {0}.  Adding empty version".format(v))
+						vars[v] = ""
+			elif vtype == 'bool':
 				for v in members:
 					try:
 						if type(vars[v]) is bool:
@@ -110,15 +110,15 @@ class kegdata():
 						if type(vars[v]) is None:
 							vars[v] = False
 						elif type(vars[v]) is int:
-							logging.debug(u"Received integer in {0}.  Converting to boolean".format(v))
+							logging.debug("Received integer in {0}.  Converting to boolean".format(v))
 							vars[v] = bool(vars[v])
 						else:
-							logging.debug(u"Received non-bool type {0} in {1}.  Converting to False".format(type(vars[v]),v))
+							logging.debug("Received non-bool type {0} in {1}.  Converting to False".format(type(vars[v]),v))
 							vars[v] = False
 					except KeyError:
-						logging.debug(u"Missing required value {0}.  Adding empty version".format(v))
+						logging.debug("Missing required value {0}.  Adding empty version".format(v))
 						vars[v] = False
-			elif vtype == u'int':
+			elif vtype == 'int':
 				for v in members:
 					try:
 						if type(vars[v]) is int:
@@ -126,13 +126,13 @@ class kegdata():
 						if type(vars[v]) is None:
 							vars[v] = 0
 						elif type(vars[v]) is bool:
-							logging.debug(u"Received boolean in {0}.  Converting to integer".format(v))
+							logging.debug("Received boolean in {0}.  Converting to integer".format(v))
 							vars[v] = int(vars[v])
 						else:
-							logging.debug(u"Received non-integer type {0} in {1}.  Converting to 0".format(type(vars[v]),v))
+							logging.debug("Received non-integer type {0} in {1}.  Converting to 0".format(type(vars[v]),v))
 							vars[v] = 0
 					except KeyError:
-						logging.debug(u"Missing required value {0}.  Adding empty version".format(v))
+						logging.debug("Missing required value {0}.  Adding empty version".format(v))
 						vars[v] = 0
 
 
@@ -184,7 +184,7 @@ class kegdata():
 
 	def run(self):
 
-		logging.debug(u"kegdata service starting")
+		logging.debug("kegdata service starting")
 
 		while True:
 			# if self.dataclient is None:
@@ -224,13 +224,13 @@ class kegdata():
 
 
 		# Update keg variables
-		self.kegdata[u'name'] = "Sharon's Stout"
-		self.kegdata[u'description'] = "Rich Chocolate and Coffee Flavor"
-		self.kegdata[u'ABV'] = 7.5
-		self.kegdata[u'IBU'] = 23
+		self.kegdata['name'] = "Sharon's Stout"
+		self.kegdata['description'] = "Rich Chocolate and Coffee Flavor"
+		self.kegdata['ABV'] = 7.5
+		self.kegdata['IBU'] = 23
 
-		self.kegdata[u'weight'] = int(self.hx.get_weight(10))
-		print "Weight is {0} in oz".format(self.kegdata[u'weight'])
+		self.kegdata['weight'] = int(self.hx.get_weight(10))
+		print("Weight is {0} in oz".format(self.kegdata['weight']))
 		self.hx.power_down()
 		self.hx.power_up()
 
@@ -239,7 +239,7 @@ class kegdata():
 	def sendUpdate(self):
 		# Figure out what has changed and then send just those values across dataqueue
 		md = { }
-		for k, v in self.kegdata.iteritems():
+		for k, v in self.kegdata.items():
 			pv = self.kegdata_prev[k] if k in self.kegdata_prev else None
 			if pv != v:
 				md[k] = v
@@ -255,9 +255,9 @@ class kegdata():
 			self.kegdata_prev = self.kegdata.copy()
 
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
 
-	logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', filename=u'kegdata.log', level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', filename='kegdata.log', level=logging.DEBUG)
 	logging.getLogger().addHandler(logging.StreamHandler())
 
 	# try:
@@ -284,7 +284,7 @@ if __name__ == u'__main__':
 
 
 	import sys
-	q = Queue.Queue()
+	q = queue.Queue()
 	kd = kegdata(q)
 
 	try:
@@ -294,16 +294,16 @@ if __name__ == u'__main__':
 				break;
 			try:
 				item = q.get(timeout=1000)
-				print u"++++++++++"
-				for k,v in item.iteritems():
-					print u"[{0}] '{1}' type {2}".format(k,v,type(v))
-				print u"++++++++++"
-				print
+				print("++++++++++")
+				for k,v in item.items():
+					print("[{0}] '{1}' type {2}".format(k,v,type(v)))
+				print("++++++++++")
+				print()
 				q.task_done()
-			except Queue.Empty:
+			except queue.Empty:
 				pass
 	except KeyboardInterrupt:
-		print u''
+		print('')
 		pass
 
-	print u"Exiting..."
+	print("Exiting...")

@@ -82,7 +82,7 @@ bigchars = [
 	{'data': [[32, 32, 32], [3, 3, 3]], 'col': 3, 'row': 2, 'char': '_'}, 			# _
 
 	# Special characters
-	{'data': [[111], [32]], 'col': 1, 'row': 2, 'char': u'\xb0'}, 			# degree symbol
+	{'data': [[111], [32]], 'col': 1, 'row': 2, 'char': '\xb0'}, 			# degree symbol
 ]
 
 def generate(choice='symbol'):
@@ -90,11 +90,11 @@ def generate(choice='symbol'):
 	# Return - An array of unicode strings; on string per line
 
 	if choice == 'symbol':
-		return [u'\x00', u'\x06']
+		return ['\x00', '\x06']
 
 
-	msg = u'PLAY'
-	retval = [ u'',u'' ] # This font has a height of two characters so initialize return value to return two lines
+	msg = 'PLAY'
+	retval = [ '','' ] # This font has a height of two characters so initialize return value to return two lines
 
 	# Check if every character is in the allowable
 	for c in msg.upper():
@@ -123,7 +123,7 @@ def generate(choice='symbol'):
 
 		for i in range(0, rows):
 			for j in range(0, cols):
-				retval[i] += unichr(bigchars[d]['data'][i][j])
+				retval[i] += chr(bigchars[d]['data'][i][j])
 
 	return retval
 

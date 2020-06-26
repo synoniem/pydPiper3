@@ -17,12 +17,12 @@
 #
 
 import time, math,logging
-import fonts
+from . import fonts
 from PIL import Image
 
-import graphics
+from . import graphics
 try:
-	import smbus
+	import smbus2 as smbus
 except:
 	logging.debug("smbus not installed")
 
@@ -234,8 +234,8 @@ class hd44780_i2c():
 		# If you find a matching entry, output the cooresponding unicode value
 		# else output a '?' symbol
 		self.currentcustom = 0
-		for j in range(self.rows_char):
-			for i in range(self.cols_char):
+		for j in range(int(self.rows_char)):
+			for i in range(int(self.cols_char)):
 				imgtest = img.crop( (i*5, j*8, (i+1)*5, (j+1)*8) )
 
 				# Check to see if the img is the same as was previously updated
@@ -281,7 +281,7 @@ class hd44780_i2c():
 			raise IndexError
 
 		if (row_char > self.rows_char):
-			row = self.rows_char - 1 # we count rows starting w/0
+			row = self.rows_char - 1 # we count rows starting w//0
 
 		self.write4bits(self.LCD_SETDDRAMADDR | (col_char + self.row_offsets[row_char]))
 
@@ -339,9 +339,9 @@ class hd44780_i2c():
 if __name__ == '__main__':
 
 	import getopt,sys, os
-	import graphics as g
-	import fonts
-	import display
+	from . import graphics as g
+	from . import fonts
+	from . import display
 	import moment
 
 	def processevent(events, starttime, prepost, db, dbp):
@@ -366,11 +366,11 @@ if __name__ == '__main__':
 			'volume':50,
 			'stream':'Not webradio',
 			'utc': 	moment.utcnow(),
-			'outside_temp_formatted':u'46\xb0F',
+			'outside_temp_formatted':'46\xb0F',
 			'outside_temp_max':72,
 			'outside_temp_min':48,
 			'outside_conditions':'Windy',
-			'system_temp_formatted':u'98\xb0C',
+			'system_temp_formatted':'98\xb0C',
 			'state':'stop',
 			'system_tempc':81.0
 		}
@@ -387,11 +387,11 @@ if __name__ == '__main__':
 			'volume':50,
 			'stream':'Not webradio',
 			'utc': 	moment.utcnow(),
-			'outside_temp_formatted':u'46\xb0F',
+			'outside_temp_formatted':'46\xb0F',
 			'outside_temp_max':72,
 			'outside_temp_min':48,
 			'outside_conditions':'Windy',
-			'system_temp_formatted':u'98\xb0C',
+			'system_temp_formatted':'98\xb0C',
 			'state':'stop',
 			'system_tempc':81.0
 		}
@@ -418,7 +418,7 @@ if __name__ == '__main__':
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hr:c:",["row=","col=","addr=","bus="])
 	except getopt.GetoptError:
-		print 'hd44780_i2c.py -r <rows> -c <cols> --addr <i2c addr> --bus <i2c bus> --enable <duration in microseconds>'
+		print('hd44780_i2c.py -r <rows> -c <cols> --addr <i2c addr> --bus <i2c bus> --enable <duration in microseconds>')
 		sys.exit(2)
 
 	# Set defaults
@@ -431,7 +431,7 @@ if __name__ == '__main__':
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'hd44780.py -r <rows> -c <cols> --addr <i2c addr> --bus <i2c bus> --enable <duration in microseconds>'
+			print('hd44780.py -r <rows> -c <cols> --addr <i2c addr> --bus <i2c bus> --enable <duration in microseconds>')
 			sys.exit()
 		elif opt in ("-r", "--rows"):
 			rows = int(arg)
@@ -446,8 +446,8 @@ if __name__ == '__main__':
 
 	try:
 
-		print "HD44780 I2C LCD Display Test"
-		print "ROWS={0}, COLS={1}, I2C Addr={2}, I2C Bus={3} enable duraction={4}".format(rows,cols,i2c_addr,i2c_bus,enable)
+		print("HD44780 I2C LCD Display Test")
+		print("ROWS={0}, COLS={1}, I2C Addr={2}, I2C Bus={3} enable duraction={4}".format(rows,cols,i2c_addr,i2c_bus,enable))
 
 		lcd = hd44780_i2c(rows,cols,i2c_addr, i2c_bus, enable)
 		lcd.clear()
@@ -457,7 +457,7 @@ if __name__ == '__main__':
 
 		starttime = time.time()
 		elapsed = int(time.time()-starttime)
-		timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+		timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
 		dc = display.display_controller((cols,rows))
 		f_path = os.path.join(os.path.dirname(__file__), 'pages_test_lcd_20x4.py')
@@ -469,7 +469,7 @@ if __name__ == '__main__':
 			db['elapsed']=elapsed
 			db['utc'] = moment.utcnow()
 			processevent(events, starttime, 'pre', db, dbp)
-			img = dc.next()
+			img = next(dc)
 			processevent(events, starttime, 'post', db, dbp)
 			lcd.update(img)
 			time.sleep(.1)
@@ -491,4 +491,4 @@ if __name__ == '__main__':
 		except:
 			pass
 		time.sleep(.5)
-		print u"LCD Display Test Complete"
+		print("LCD Display Test Complete")

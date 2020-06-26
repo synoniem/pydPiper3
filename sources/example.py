@@ -1,12 +1,12 @@
 import RPi.GPIO as GPIO
 import time
 import sys
-from hx711 import HX711
+from .hx711 import HX711
 
 def cleanAndExit():
-    print "Cleaning..."
+    print("Cleaning...")
     GPIO.cleanup()
-    print "Bye!"
+    print("Bye!")
     sys.exit()
 
 #hx = HX711(21,20)
@@ -55,7 +55,7 @@ while True:
 #	weight = round(val / 75.0,1)
 	weight = val 
 #       print "{0:>{1}} {2}".format(weight,5, bar(weight))
-        print "{0}".format(weight)
+        print("{0}".format(weight))
 
         hx.power_down()
         hx.power_up()

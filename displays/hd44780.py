@@ -17,11 +17,11 @@
 #
 
 import time, math,logging
-import lcd_display_driver
-import fonts
+from . import lcd_display_driver
+from . import fonts
 from PIL import Image
 
-import graphics
+from . import graphics
 try:
 	import RPi.GPIO as GPIO
 except:
@@ -336,7 +336,7 @@ if __name__ == '__main__':
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hr:c:",["row=","col=","rs=","e=","d4=","d5=","d6=", "d7="])
 	except getopt.GetoptError:
-		print 'hd44780.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>'
+		print('hd44780.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>')
 		sys.exit(2)
 
 	# Set defaults
@@ -353,7 +353,7 @@ if __name__ == '__main__':
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'hd44780.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>'
+			print('hd44780.py -r <rows> -c <cols> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --enable <duration in microseconds>')
 			sys.exit()
 		elif opt in ("-r", "--rows"):
 			rows = int(arg)
@@ -377,8 +377,8 @@ if __name__ == '__main__':
 	try:
 
 		pins = [d4, d5, d6, d7]
-		print "HD44780 LCD Display Test"
-		print "ROWS={0}, COLS={1}, RS={2}, E={3}, Pins={4}, enable duration={5}".format(rows,cols,rs,e,pins,enable)
+		print("HD44780 LCD Display Test")
+		print("ROWS={0}, COLS={1}, RS={2}, E={3}, Pins={4}, enable duration={5}".format(rows,cols,rs,e,pins,enable))
 
 		lcd = hd44780(rows,cols,rs,e,[d4, d5, d6, d7],enable)
 		lcd.clear()
@@ -404,4 +404,4 @@ if __name__ == '__main__':
 			pass
 		time.sleep(.5)
 		GPIO.cleanup()
-		print u"LCD Display Test Complete"
+		print("LCD Display Test Complete")

@@ -16,9 +16,9 @@ def connect(server, port, user, pwd):
 
 		players = dataserver.get_players()
 		for p in players:
-			print "{0} is at address {1}".format(p.get_name(), str(p)[8:])
+			print("{0} is at address {1}".format(p.get_name(), str(p)[8:]))
 	except (IOError, AttributeError, IndexError):
-		print "Error trying to get player data"
+		print("Error trying to get player data")
 
 
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hs:p:u:w:",["server=","port=","user","pwd"])
 	except getopt.GetoptError:
-		print 'lmslist.py -s <server> -p <port> -u <user> -w <password>'
+		print('lmslist.py -s <server> -p <port> -u <user> -w <password>')
 		sys.exit(2)
 
 	# Set defaults
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'lmslist.py -s <server> -p <port> -u <user> -w <password>'
+			print('lmslist.py -s <server> -p <port> -u <user> -w <password>')
 			sys.exit()
 		elif opt in ("-s", "--server"):
 			server = arg

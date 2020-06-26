@@ -5,12 +5,12 @@
 # Written by: Ron Ritchey
 # Uses RPLCD by dbrgn (github/dbrgn/RPLCD)
 
-from __future__ import unicode_literals
+
 
 import time, math, logging, os
-import fonts
-import graphics as g
-import display
+from . import fonts
+from . import graphics as g
+from . import display
 import moment
 import RPi.GPIO as GPIO
 from PIL import Image
@@ -123,7 +123,7 @@ class pyLCD(object):
 
         starttime = time.time()
         elapsed = int(time.time()-starttime)
-        timepos = time.strftime(u"%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime(u"%-M:%S", time.gmtime(int(254)))
+        timepos = time.strftime("%-M:%S", time.gmtime(int(elapsed))) + "/" + time.strftime("%-M:%S", time.gmtime(int(254)))
 
         dc = display.display_controller((80,16))
         f_path = os.path.join(os.path.dirname(__file__), 'pages_test.py')
@@ -135,7 +135,7 @@ class pyLCD(object):
             db['elapsed']=elapsed
             db['utc'] = moment.utcnow()
             self.processevent(events, starttime, 'pre', db, dbp)
-            img = dc.next()
+            img = next(dc)
             self.processevent(events, starttime, 'post', db, dbp)
             lcd.update(img)
             time.sleep(.01)
@@ -221,8 +221,8 @@ if __name__ == '__main__':
         interface = interfaceGpio(pin_rs = rs, pin_rw = None, pin_e = e, pins_data = pins)
         lcd = ws0010(interface)
 
-        print "Winstar OLED Display Test"
-        print "ROWS={0}, COLS={1}, RS={2}, E={3}, Pins={4}".format(rows,cols,rs,e,pins)
+        print("Winstar OLED Display Test")
+        print("ROWS={0}, COLS={1}, RS={2}, E={3}, Pins={4}".format(rows,cols,rs,e,pins))
 
         lcd.clear()
         lcd.write_string("pydPiper\nStarting")

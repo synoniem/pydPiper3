@@ -1,8 +1,8 @@
 import logging
 import sys
 if sys.version_info[0] < 3:
-    import ConfigParser
-    config = ConfigParser.RawConfigParser()
+    import configparser
+    config = configparser.RawConfigParser()
 else:
     import configparser
     config = configparser.RawConfigParser()
