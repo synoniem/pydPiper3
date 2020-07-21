@@ -200,8 +200,8 @@ class musicdata_volumio2(musicdata.musicdata):
 				timepos = time.strftime("%-M:%S", time.gmtime(int(self.musicdata['elapsed'])))
 				remaining = timepos
 
-			self.musicdata['remaining'] = remaining.decode()
-			self.musicdata['elapsed_formatted'] = timepos.decode()
+			self.musicdata['remaining'] = remaining
+			self.musicdata['elapsed_formatted'] = timepos
 
 			# For backwards compatibility
 			self.musicdata['position'] = self.musicdata['elapsed_formatted']
