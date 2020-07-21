@@ -5,8 +5,8 @@ After = mpd.service
 
 [Service]
 Restart = always
-ExecStart = /usr/bin/docker run --rm --network=host --privileged -v /var/log:/var/log:rw -v /home/volumio/pydPiper:/app:rw dhrone/pydpiper:latest python /app/pydPiper.py
-ExecStop = /usr/bin/docker stop -t 2 dhrone/pydpiper:latest
+ExecStart = /usr/bin/docker run --rm --network=host --privileged -v /var/log:/var/log:rw -v /home/volumio/pydPiper3:/app:rw synoniem/pydpiper3:latest python /app/pydPiper.py
+ExecStop = /usr/bin/docker stop -t 2 synoniem/pydpiper3:latest
 [Install]
 WantedBy = multi-user.target
 
