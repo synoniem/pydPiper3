@@ -555,11 +555,12 @@ class music_controller(threading.Thread):
                         p = os.popen("df -B 1 /")
                         line = p.readline()
                         line = p.readline()
+                        line = p.readline()
 
                         va = line.split()
-                       	avail = int(va[3])
-                        usedp = int(va[4][:-1]) # Remove trailing % and convert to int
-                        used = int(va[2])
+                       	avail = int(va[2])
+                        usedp = int(va[3][:-1]) # Remove trailing % and convert to int
+                        used = int(va[1])
                         availp = 100-usedp
                 else:
                     # assume running on Raspberry linux
