@@ -6,7 +6,12 @@
 
 import pydPiper_config
 import json, threading, logging, queue, time, sys
-from . import musicdata
+
+try:
+    from sources import musicdata
+except:
+    import musicdata
+
 from socketIO_client import SocketIO
 
 

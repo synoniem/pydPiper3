@@ -5,8 +5,12 @@
 # Written by: Ron Ritchey
 
 
-import json, mpd, threading, logging, queue, time, sys, getopt
-from . import musicdata
+import json, mpd, threading, logging, queue, time, sys, getopt 
+try:
+    from sources import musicdata
+except:
+    import musicdata
+# import musicdata
 
 class musicdata_mpd(musicdata.musicdata):
 
@@ -173,13 +177,14 @@ class musicdata_mpd(musicdata.musicdata):
         self.musicdata['playlist_count'] = self.musicdata['playlist_length']
 
         # If playlist is length 1 and the song playing is from an http source it is streaming
-        if self.musicdata['encoding'] == 'webradio':
+        if self.musicdata['encoding'] == 'webradio' :
+            self.musicdata['stream'] = 'webradio'
             self.musicdata['playlist_display'] = "Radio"
             if not self.musicdata['artist']:
                 self.musicdata['artist'] = current_song['name'] if 'name' in current_song else ""
         else:
                 self.musicdata['playlist_display'] = "{0}/{1}".format(self.musicdata['playlist_position'], self.musicdata['playlist_count'])
-
+                self.musicdata['stream'] = ''
         audio = status['audio'] if 'audio' in status else None
         bitdepth = ""
         samplerate = ""
@@ -230,6 +235,7 @@ class musicdata_mpd(musicdata.musicdata):
         self.musicdata['position'] = self.musicdata['elapsed_formatted']
 
         self.validatemusicvars(self.musicdata)
+
 
 
 if __name__ == '__main__':
