@@ -8,7 +8,7 @@
 import json, threading, logging, queue, time, sys, getopt, moment, signal, subprocess, os, copy, datetime, math, requests
 import pages
 import displays
-import sources
+from sources import musicdata_mpd, musicdata_spop, musicdata_volumio2, musicdata_rune, musicdata_lms
 import pydPiper_config
 import pause
 
@@ -114,15 +114,15 @@ class music_controller(threading.Thread):
             s = s.lower()
             try:
                 if s == "mpd" or s == "moode":
-                    musicservice = sources.musicdata_mpd.musicdata_mpd(self.musicqueue, pydPiper_config.MPD_SERVER, pydPiper_config.MPD_PORT, pydPiper_config.MPD_PASSWORD)
+                    musicservice = musicdata_mpd.musicdata_mpd(self.musicqueue, pydPiper_config.MPD_SERVER, pydPiper_config.MPD_PORT, pydPiper_config.MPD_PASSWORD)
                 elif s == "spop":
-                    musicservice = sources.musicdata_spop.musicdata_spop(self.musicqueue, pydPiper_config.SPOP_SERVER, pydPiper_config.SPOP_PORT, pydPiper_config.SPOP_PASSWORD)
+                    musicservice = musicdata_spop.musicdata_spop(self.musicqueue, pydPiper_config.SPOP_SERVER, pydPiper_config.SPOP_PORT, pydPiper_config.SPOP_PASSWORD)
                 elif s == "lms":
-                    musicservice = sources.musicdata_lms.musicdata_lms(self.musicqueue, pydPiper_config.LMS_SERVER, pydPiper_config.LMS_PORT, pydPiper_config.LMS_USER, pydPiper_config.LMS_PASSWORD, pydPiper_config.LMS_PLAYER)
+                    musicservice = musicdata_lms.musicdata_lms(self.musicqueue, pydPiper_config.LMS_SERVER, pydPiper_config.LMS_PORT, pydPiper_config.LMS_USER, pydPiper_config.LMS_PASSWORD, pydPiper_config.LMS_PLAYER)
                 elif s == "rune":
-                    musicservice = sources.musicdata_rune.musicdata_rune(self.musicqueue, pydPiper_config.RUNE_SERVER, pydPiper_config.RUNE_PORT, pydPiper_config.RUNE_PASSWORD)
+                    musicservice = musicdata_rune.musicdata_rune(self.musicqueue, pydPiper_config.RUNE_SERVER, pydPiper_config.RUNE_PORT, pydPiper_config.RUNE_PASSWORD)
                 elif s == "volumio":
-                    musicservice = sources.musicdata_volumio2.musicdata_volumio2(self.musicqueue, pydPiper_config.VOLUMIO_SERVER, pydPiper_config.VOLUMIO_PORT, exitapp )
+                    musicservice = musicdata_volumio2.musicdata_volumio2(self.musicqueue, pydPiper_config.VOLUMIO_SERVER, pydPiper_config.VOLUMIO_PORT, exitapp )
                 else:
                     logging.debug("Unsupported music service {0} requested".format(s))
                     continue
@@ -555,13 +555,19 @@ class music_controller(threading.Thread):
                         p = os.popen("df -B 1 /")
                         line = p.readline()
                         line = p.readline()
-                        line = p.readline()
-
-                        va = line.split()
-                       	avail = int(va[2])
-                        usedp = int(va[3][:-1]) # Remove trailing % and convert to int
-                        used = int(va[1])
-                        availp = 100-usedp
+                        if line[0:15] == '/dev/mapper/docker':
+                            line = p.readline()
+                            va = line.split()
+                            avail = int(va[2])
+                            usedp = int(va[3][:-1]) # Remove trailing % and convert to int
+                            used = int(va[1])
+                            availp = 100-usedp
+                        else:
+                            va = line.split()
+                            avail = int(va[3])
+                            usedp = int(va[4][:-1]) # Remove trailing % and convert to int
+                            used = int(va[2])
+                            availp = 100-usedp
                 else:
                     # assume running on Raspberry linux
                     with os.popen("df -B 1 /") as p:
@@ -759,7 +765,7 @@ if __name__ == '__main__':
         try:
             driver = pydPiper_config.DISPLAY_DRIVER
         except:
-            drvier = ''
+            driver = ''
 
     if not devicetype:
         try:
