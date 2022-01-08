@@ -3,8 +3,8 @@
 
 # pydPiper service to display music data to LCD and OLED character displays
 # Written by: Ron Ritchey
-
-
+# Edited by: synoniem@hotmail.com
+# Also edited by Saiyato
 import json, threading, logging, queue, time, sys, getopt, moment, signal, subprocess, os, copy, datetime, math, requests
 import pages
 import displays
@@ -38,10 +38,12 @@ class music_controller(threading.Thread):
         'current':-1,
         'elapsed':-1,
         'remaining':"",
+        'total_time':"",
         'duration':-1,
         'length':-1,
         'position':"",
         'elapsed_formatted':"",
+        'elapsed_simple':"",
         'volume':-1,
         'repeat': 0,
         'single': 0,
@@ -218,17 +220,22 @@ class music_controller(threading.Thread):
 
                 # If the value of current has changed then update the other related timing variables
                 if self.musicdata['elapsed'] != self.musicdata_prev['elapsed']:
+                    timepos = time.strftime("%-M:%S", time.gmtime(self.musicdata['elapsed']))
+                    timepos_advanced = timepos
+                    total_time = "00:00"                    
                     if self.musicdata['length'] > 0:
-                        timepos = time.strftime("%-M:%S", time.gmtime(self.musicdata['elapsed'])) + "/" + time.strftime("%-M:%S", time.gmtime(self.musicdata['length']))
+#                        timepos = time.strftime("%-M:%S", time.gmtime(self.musicdata['elapsed'])) + "/" + time.strftime("%-M:%S", time.gmtime(self.musicdata['length']))
+                        timepos_advanced = time.strftime("%-M:%S", time.gmtime(self.musicdata['elapsed'])) + "/" + time.strftime("%-M:%S", time.gmtime(self.musicdata['length']))
                         remaining = time.strftime("%-M:%S", time.gmtime(self.musicdata['length'] - self.musicdata['elapsed'] ) )
-
+                        total_time = time.strftime("%-M:%S", time.gmtime(self.musicdata['length']))
                     else:
                         timepos = time.strftime("%-M:%S", time.gmtime(self.musicdata['elapsed']))
                         remaining = timepos
-
+                    self.musicdata[u'elapsed_formatted'] = timepos_advanced
                     self.musicdata['remaining'] = remaining
-                    self.musicdata['elapsed_formatted'] = self.musicdata['position'] = timepos
-
+#                    self.musicdata['elapsed_formatted'] = self.musicdata['position'] = timepos
+                    self.musicdata[u'elapsed_simple'] = self.musicdata[u'position'] = timepos
+                    self.musicdata[u'total_time'] = total_time
                 # Update onoff variables (random, single, repeat)
                 self.musicdata['random_onoff'] = "On" if self.musicdata['random'] else "Off"
                 self.musicdata['single_onoff'] = "On" if self.musicdata['single'] else "Off"
@@ -708,6 +715,8 @@ if __name__ == '__main__':
             pydPiper_config.WUNDER_LOCATION = arg
         elif opt in ("--timezone"):
             pydPiper_config.TIMEZONE = arg
+        elif opt in (u"--time24hour"):
+            pydPiper_config.TIME24HOUR = True
         elif opt in ("--temperature"):
             pydPiper_config.TEMPERATURE = arg
         elif opt in ("--mpd"):
